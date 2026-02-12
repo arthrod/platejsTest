@@ -51,31 +51,36 @@ import {
 } from './indent-list-toolbar-button';
 import { IndentTodoToolbarButton } from './indent-todo-toolbar-button';
 import { IndentToolbarButton } from './indent-toolbar-button';
+import { IndexSidebarToolbarButton } from './index-sidebar-toolbar-button';
 import { InsertDropdownMenu } from './insert-dropdown-menu';
+import {
+  LayoutToggleButton,
+  MultiPageToggleButton,
+  PageSetupButton,
+  RulerToggleButton,
+} from './layout-toolbar-buttons';
 import { LineHeightDropdownMenu } from './line-height-dropdown-menu';
 import { LinkToolbarButton } from './link-toolbar-button';
 import { MarkToolbarButton } from './mark-toolbar-button';
 import { MediaToolbarButton } from './media-toolbar-button';
 import { ModeDropdownMenu } from './mode-dropdown-menu';
 import { OutdentToolbarButton } from './outdent-toolbar-button';
+import { PageBreakToolbarButton } from './page-break-toolbar-button';
 import { TableDropdownMenu } from './table-dropdown-menu';
 import { ToggleToolbarButton } from './toggle-toolbar-button';
 import { ToolbarGroup } from './toolbar';
 import { TurnIntoDropdownMenu } from './turn-into-dropdown-menu';
 import { VersionHistoryToolbarButton } from './version-history-toolbar-button';
-import { RulerToggleButton, PageSetupButton, LayoutToggleButton, MultiPageToggleButton } from './layout-toolbar-buttons';
-import { PageBreakToolbarButton } from './page-break-toolbar-button';
-import { IndexSidebarToolbarButton } from './index-sidebar-toolbar-button';
 
-export function FixedToolbarButtons() {
+export const FixedToolbarButtons = React.memo(() => {
   const readOnly = useEditorReadOnly();
 
   return (
-    <div className="flex flex-col w-full">
+    <div className="flex w-full flex-col">
       {!readOnly && (
         <>
           {/* First Row - Main Actions */}
-          <div className="flex w-full items-center border-b border-border/50 pb-1 mb-1">
+          <div className="mb-1 flex w-full items-center border-b border-border/50 pb-1">
             <ToolbarGroup>
               <UndoToolbarButton />
               <RedoToolbarButton />
@@ -145,7 +150,10 @@ export function FixedToolbarButtons() {
             <div className="grow" />
 
             <ToolbarGroup>
-              <MarkToolbarButton nodeType={HighlightPlugin.key} tooltip="Highlight">
+              <MarkToolbarButton
+                nodeType={HighlightPlugin.key}
+                tooltip="Highlight"
+              >
                 <HighlighterIcon />
               </MarkToolbarButton>
               <CommentToolbarButton />
@@ -189,14 +197,14 @@ export function FixedToolbarButtons() {
               <VersionHistoryToolbarButton />
             </ToolbarGroup>
 
-                      <ToolbarGroup>
-            <RulerToggleButton />
-            <PageSetupButton />
-            <LayoutToggleButton />
-            <MultiPageToggleButton />
-            <PageBreakToolbarButton />
-            <IndexSidebarToolbarButton />
-          </ToolbarGroup>
+            <ToolbarGroup>
+              <RulerToggleButton />
+              <PageSetupButton />
+              <LayoutToggleButton />
+              <MultiPageToggleButton />
+              <PageBreakToolbarButton />
+              <IndexSidebarToolbarButton />
+            </ToolbarGroup>
 
             <ToolbarGroup>
               <MoreDropdownMenu />
@@ -208,4 +216,4 @@ export function FixedToolbarButtons() {
       )}
     </div>
   );
-}
+});
