@@ -9,40 +9,37 @@ import { Plate } from '@udecode/plate/react';
 import { SettingsDialog } from '@/components/editor/settings';
 import { useCreateEditor } from '@/components/editor/use-create-editor';
 import { Editor, EditorContainer } from '@/components/plate-ui/editor';
-import { LayoutWrapper } from '@/components/plate-ui/layout-wrapper';
-import { MultiPageLayout } from '@/components/plate-ui/multi-page-layout';
 import { EnhancedMultiPageLayout } from '@/components/plate-ui/enhanced-multi-page-layout';
-import { IndexSidebar } from '@/components/plate-ui/index-sidebar';
-import { Toolbar } from '@/components/plate-ui/toolbar';
 import { FixedToolbarButtons } from '@/components/plate-ui/fixed-toolbar-buttons';
+import { IndexSidebar } from '@/components/plate-ui/index-sidebar';
+import { LayoutWrapper } from '@/components/plate-ui/layout-wrapper';
+import { Toolbar } from '@/components/plate-ui/toolbar';
 import { useLayoutStore } from '@/lib/layout-store';
 
 function LayoutProvider({ children }: { children: React.ReactNode }) {
-  const { 
-    showRuler, 
-    showPageSetup, 
-    layoutMode, 
-    multiPageMode,
-    showIndexSidebar,
-    setShowIndexSidebar,
-    pageConfig, 
-    setPageConfig 
-  } = useLayoutStore();
+  const showRuler = useLayoutStore((state) => state.showRuler);
+  const showPageSetup = useLayoutStore((state) => state.showPageSetup);
+  const layoutMode = useLayoutStore((state) => state.layoutMode);
+  const multiPageMode = useLayoutStore((state) => state.multiPageMode);
+  const pageConfig = useLayoutStore((state) => state.pageConfig);
+  const setPageConfig = useLayoutStore((state) => state.setPageConfig);
 
   // If in web layout mode, just render children without wrapper
   if (layoutMode === 'web') {
-    return <div className="flex-1 h-full overflow-auto">{children}</div>;
+    return <div className="h-full flex-1 overflow-auto">{children}</div>;
   }
 
   // In page layout mode, choose between single and multi-page layout
-  const LayoutComponent = multiPageMode ? EnhancedMultiPageLayout : LayoutWrapper;
-  
+  const LayoutComponent = multiPageMode
+    ? EnhancedMultiPageLayout
+    : LayoutWrapper;
+
   return (
     <LayoutComponent
-      config={pageConfig}
       onConfigChange={setPageConfig}
-      showRuler={showRuler}
+      config={pageConfig}
       showPageSetup={showPageSetup}
+      showRuler={showRuler}
     >
       {children}
     </LayoutComponent>
@@ -50,13 +47,15 @@ function LayoutProvider({ children }: { children: React.ReactNode }) {
 }
 
 function EditorWithLayout() {
-  const { layoutMode } = useLayoutStore();
-  
+  const layoutMode = useLayoutStore((state) => state.layoutMode);
+
   return (
     <EditorContainer variant={layoutMode === 'page' ? 'default' : 'demo'}>
-      <Editor 
-        variant={layoutMode === 'page' ? 'none' : 'demo'} 
-        className={layoutMode === 'page' ? 'p-4 h-full w-full max-w-none' : undefined}
+      <Editor
+        variant={layoutMode === 'page' ? 'none' : 'demo'}
+        className={
+          layoutMode === 'page' ? 'h-full w-full max-w-none p-4' : undefined
+        }
       />
     </EditorContainer>
   );
@@ -64,32 +63,37 @@ function EditorWithLayout() {
 
 export function PlateEditor() {
   const editor = useCreateEditor();
-  const { showIndexSidebar, setShowIndexSidebar } = useLayoutStore();
+  const showIndexSidebar = useLayoutStore((state) => state.showIndexSidebar);
+  const setShowIndexSidebar = useLayoutStore(
+    (state) => state.setShowIndexSidebar
+  );
 
   return (
     <DndProvider backend={HTML5Backend}>
       <Plate editor={editor}>
-        <div className="h-full flex flex-col">
+        <div className="flex h-full flex-col">
           {/* Fixed Toolbar - always at the top with proper z-index */}
-          <div className="flex-shrink-0 relative z-50 bg-background border-b border-border">
+          <div className="relative z-50 flex-shrink-0 border-b border-border bg-background">
             <Toolbar className="w-full justify-between overflow-x-auto bg-background/95 p-1 backdrop-blur-sm supports-backdrop-blur:bg-background/60">
               <FixedToolbarButtons />
             </Toolbar>
           </div>
-          
+
           {/* Main Content Area with Sidebar */}
-          <div className="flex-1 flex overflow-hidden relative">
+          <div className="relative flex flex-1 overflow-hidden">
             {/* Layout Provider - contains ruler and page layout */}
-            <div className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 ${showIndexSidebar ? 'mr-80' : ''}`}>
+            <div
+              className={`flex flex-1 flex-col overflow-hidden transition-all duration-300 ${showIndexSidebar ? 'mr-80' : ''}`}
+            >
               <LayoutProvider>
                 <EditorWithLayout />
               </LayoutProvider>
             </div>
-            
+
             {/* Index Sidebar */}
-            <IndexSidebar 
-              isOpen={showIndexSidebar} 
-              onClose={() => setShowIndexSidebar(false)} 
+            <IndexSidebar
+              onClose={() => setShowIndexSidebar(false)}
+              isOpen={showIndexSidebar}
             />
           </div>
         </div>

@@ -1,48 +1,52 @@
 import { create } from 'zustand';
+
 import { PageSetupConfig } from '@/components/plate-ui/page-setup';
 
 interface LayoutState {
-  showRuler: boolean;
-  showPageSetup: boolean;
   layoutMode: 'page' | 'web';
   multiPageMode: boolean;
-  showIndexSidebar: boolean;
   pageConfig: PageSetupConfig;
-  toggleRuler: () => void;
-  togglePageSetup: () => void;
+  showIndexSidebar: boolean;
+  showPageSetup: boolean;
+  showRuler: boolean;
+  setPageConfig: (config: PageSetupConfig) => void;
+  setShowIndexSidebar: (show: boolean) => void;
   toggleLayoutMode: () => void;
   toggleMultiPageMode: () => void;
-  setShowIndexSidebar: (show: boolean) => void;
-  setPageConfig: (config: PageSetupConfig) => void;
+  togglePageSetup: () => void;
+  toggleRuler: () => void;
 }
 
 const defaultPageConfig: PageSetupConfig = {
-  paperSize: 'letter',
-  orientation: 'portrait',
+  height: 11,
   margins: {
-    top: 1,
     bottom: 1,
     left: 1,
     right: 1,
+    top: 1,
   },
-  width: 8.5,
-  height: 11,
+  orientation: 'portrait',
+  paperSize: 'letter',
   unit: 'in',
+  width: 8.5,
 };
 
 export const useLayoutStore = create<LayoutState>((set) => ({
-  showRuler: true,
-  showPageSetup: false,
   layoutMode: 'page',
   multiPageMode: false,
-  showIndexSidebar: false,
   pageConfig: defaultPageConfig,
-  toggleRuler: () => set((state) => ({ showRuler: !state.showRuler })),
-  togglePageSetup: () => set((state) => ({ showPageSetup: !state.showPageSetup })),
-  toggleLayoutMode: () => set((state) => ({ 
-    layoutMode: state.layoutMode === 'page' ? 'web' : 'page' 
-  })),
-  toggleMultiPageMode: () => set((state) => ({ multiPageMode: !state.multiPageMode })),
-  setShowIndexSidebar: (show) => set({ showIndexSidebar: show }),
+  showIndexSidebar: false,
+  showPageSetup: false,
+  showRuler: true,
   setPageConfig: (config) => set({ pageConfig: config }),
-})); 
+  setShowIndexSidebar: (show) => set({ showIndexSidebar: show }),
+  toggleLayoutMode: () =>
+    set((state) => ({
+      layoutMode: state.layoutMode === 'page' ? 'web' : 'page',
+    })),
+  toggleMultiPageMode: () =>
+    set((state) => ({ multiPageMode: !state.multiPageMode })),
+  togglePageSetup: () =>
+    set((state) => ({ showPageSetup: !state.showPageSetup })),
+  toggleRuler: () => set((state) => ({ showRuler: !state.showRuler })),
+}));

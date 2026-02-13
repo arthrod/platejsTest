@@ -1,12 +1,13 @@
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+
 import { useEditorRef } from '@udecode/plate/react';
 
 interface HeadingItem {
   id: string;
-  text: string;
-  level: number;
-  element: HTMLElement;
   children: HeadingItem[];
+  element: HTMLElement;
+  level: number;
+  text: string;
 }
 
 export function useHeadings() {
@@ -16,7 +17,9 @@ export function useHeadings() {
 
   // Extract headings from the editor content
   const extractHeadings = useCallback(() => {
-    const headingElements = document.querySelectorAll('[data-slate-editor="true"] h1, [data-slate-editor="true"] h2, [data-slate-editor="true"] h3, [data-slate-editor="true"] h4, [data-slate-editor="true"] h5, [data-slate-editor="true"] h6');
+    const headingElements = document.querySelectorAll(
+      '[data-slate-editor="true"] h1, [data-slate-editor="true"] h2, [data-slate-editor="true"] h3, [data-slate-editor="true"] h4, [data-slate-editor="true"] h5, [data-slate-editor="true"] h6'
+    );
     const headingItems: HeadingItem[] = [];
     const stack: HeadingItem[] = [];
 
@@ -24,12 +27,12 @@ export function useHeadings() {
       const tagName = element.tagName.toLowerCase();
       const level = parseInt(tagName.charAt(1));
       const text = element.textContent?.trim() || '';
-      
+
       // Skip empty headings
       if (!text) return;
-      
+
       const id = element.id || `heading-${index}-${Date.now()}`;
-      
+
       // Ensure element has an ID for scrolling
       if (!element.id) {
         element.id = id;
@@ -37,10 +40,10 @@ export function useHeadings() {
 
       const headingItem: HeadingItem = {
         id,
-        text,
-        level,
-        element: element as HTMLElement,
         children: [],
+        element: element as HTMLElement,
+        level,
+        text,
       };
 
       // Build hierarchical structure
@@ -64,7 +67,7 @@ export function useHeadings() {
   const updateHeadings = useCallback(() => {
     const now = Date.now();
     if (now - lastUpdateTimeRef.current < 100) return; // Throttle updates
-    
+
     const newHeadings = extractHeadings();
     setHeadings(newHeadings);
     lastUpdateTimeRef.current = now;
@@ -95,9 +98,9 @@ export function useHeadings() {
     const editorElement = document.querySelector('[data-slate-editor="true"]');
     if (editorElement) {
       mutationObserver.observe(editorElement, {
+        characterData: true,
         childList: true,
         subtree: true,
-        characterData: true,
       });
       observers.push(() => mutationObserver.disconnect());
     }
@@ -108,9 +111,9 @@ export function useHeadings() {
 
     return () => {
       clearTimeout(initialTimer);
-      observers.forEach(cleanup => cleanup());
+      observers.forEach((cleanup) => cleanup());
     };
   }, [editor]);
 
   return headings;
-} 
+}

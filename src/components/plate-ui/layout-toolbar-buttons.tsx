@@ -1,18 +1,20 @@
 'use client';
 
 import React from 'react';
-import { Ruler, Settings, Layout, FileText } from 'lucide-react';
+
+import { FileText, Layout, Ruler, Settings } from 'lucide-react';
 
 import { ToolbarButton } from '@/components/plate-ui/toolbar';
 import { useLayoutStore } from '@/lib/layout-store';
 
 export function RulerToggleButton() {
-  const { showRuler, toggleRuler } = useLayoutStore();
+  const showRuler = useLayoutStore((state) => state.showRuler);
+  const toggleRuler = useLayoutStore((state) => state.toggleRuler);
 
   return (
     <ToolbarButton
-      pressed={showRuler}
       onClick={toggleRuler}
+      pressed={showRuler}
       tooltip="Toggle Ruler"
     >
       <Ruler className="h-4 w-4" />
@@ -21,12 +23,13 @@ export function RulerToggleButton() {
 }
 
 export function PageSetupButton() {
-  const { showPageSetup, togglePageSetup } = useLayoutStore();
+  const showPageSetup = useLayoutStore((state) => state.showPageSetup);
+  const togglePageSetup = useLayoutStore((state) => state.togglePageSetup);
 
   return (
     <ToolbarButton
-      pressed={showPageSetup}
       onClick={togglePageSetup}
+      pressed={showPageSetup}
       tooltip="Page Setup"
     >
       <Settings className="h-4 w-4" />
@@ -35,13 +38,16 @@ export function PageSetupButton() {
 }
 
 export function LayoutToggleButton() {
-  const { layoutMode, toggleLayoutMode } = useLayoutStore();
+  const layoutMode = useLayoutStore((state) => state.layoutMode);
+  const toggleLayoutMode = useLayoutStore((state) => state.toggleLayoutMode);
 
   return (
     <ToolbarButton
-      pressed={layoutMode === 'page'}
       onClick={toggleLayoutMode}
-      tooltip={layoutMode === 'page' ? 'Switch to Web Layout' : 'Switch to Page Layout'}
+      pressed={layoutMode === 'page'}
+      tooltip={
+        layoutMode === 'page' ? 'Switch to Web Layout' : 'Switch to Page Layout'
+      }
     >
       <Layout className="h-4 w-4" />
     </ToolbarButton>
@@ -49,7 +55,11 @@ export function LayoutToggleButton() {
 }
 
 export function MultiPageToggleButton() {
-  const { multiPageMode, toggleMultiPageMode, layoutMode } = useLayoutStore();
+  const multiPageMode = useLayoutStore((state) => state.multiPageMode);
+  const toggleMultiPageMode = useLayoutStore(
+    (state) => state.toggleMultiPageMode
+  );
+  const layoutMode = useLayoutStore((state) => state.layoutMode);
 
   // Only show when in page layout mode
   if (layoutMode !== 'page') {
@@ -58,11 +68,11 @@ export function MultiPageToggleButton() {
 
   return (
     <ToolbarButton
-      pressed={multiPageMode}
       onClick={toggleMultiPageMode}
+      pressed={multiPageMode}
       tooltip={multiPageMode ? 'Switch to Single Page' : 'Switch to Multi-Page'}
     >
       <FileText className="h-4 w-4" />
     </ToolbarButton>
   );
-} 
+}
