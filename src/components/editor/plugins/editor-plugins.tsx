@@ -21,10 +21,9 @@ import { TogglePlugin } from '@udecode/plate-toggle/react';
 import { TrailingBlockPlugin } from '@udecode/plate-trailing-block';
 
 import { FloatingToolbarPlugin } from '@/components/editor/plugins/floating-toolbar-plugin';
-import { VersionHistoryPlugin } from '@/components/editor/plugins/version-history-plugin';
-import { PageBreakPlugin } from '@/components/editor/plugins/page-break-plugin';
 import { HeadingIdPlugin } from '@/components/editor/plugins/heading-id-plugin';
-
+import { PageBreakPlugin } from '@/components/editor/plugins/page-break-plugin';
+import { VersionHistoryPlugin } from '@/components/editor/plugins/version-history-plugin';
 import { BlockDiscussion } from '@/components/plate-ui/block-discussion';
 import { SuggestionBelowNodes } from '@/components/plate-ui/suggestion-line-break';
 

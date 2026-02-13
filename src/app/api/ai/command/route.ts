@@ -6,23 +6,21 @@ import { streamText } from 'ai';
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    
+
     // Extract standard AI SDK properties
     const { messages, system } = body;
-    
+
     // Extract custom properties for API key and model
-    const {
-      apiKey: key,
-      model: requestedModel = 'gemini-1.5-flash',
-    } = body;
+    const { apiKey: key, model: requestedModel = 'gemini-1.5-flash' } = body;
 
     const apiKey = key || process.env.GEMINI_API_KEY;
 
     if (!apiKey) {
       return new Response(
-        JSON.stringify({ 
+        JSON.stringify({
+          details:
+            'Please provide a valid Google Gemini API key. You can get one at https://aistudio.google.com/app/apikey',
           error: 'Missing Gemini API key',
-          details: 'Please provide a valid Google Gemini API key. You can get one at https://aistudio.google.com/app/apikey'
         }),
         { headers: { 'Content-Type': 'application/json' }, status: 401 }
       );
@@ -37,7 +35,7 @@ export async function POST(req: NextRequest) {
 
     // Create Google provider with API key
     const google = createGoogleGenerativeAI({ apiKey });
-    
+
     // Use AI SDK's streamText with Google provider
     const result = await streamText({
       messages,
@@ -50,25 +48,29 @@ export async function POST(req: NextRequest) {
     console.error('AI API Error:', error);
     console.error('Error stack:', error.stack);
     console.error('Error name:', error.name);
-    
+
     // Handle specific API key errors
-    if (error.message?.includes('API key not valid') || error.message?.includes('Invalid API key')) {
+    if (
+      error.message?.includes('API key not valid') ||
+      error.message?.includes('Invalid API key')
+    ) {
       return new Response(
-        JSON.stringify({ 
+        JSON.stringify({
+          details:
+            'Please provide a valid Google Gemini API key. You can get one at https://aistudio.google.com/app/apikey',
           error: 'Invalid API key',
-          details: 'Please provide a valid Google Gemini API key. You can get one at https://aistudio.google.com/app/apikey',
-          type: 'AuthenticationError'
+          type: 'AuthenticationError',
         }),
         { headers: { 'Content-Type': 'application/json' }, status: 401 }
       );
     }
-    
+
     // Handle general errors
     return new Response(
-      JSON.stringify({ 
-        error: 'Failed to process AI request',
+      JSON.stringify({
         details: error.message || 'Unknown error occurred',
-        type: error.name || 'UnknownError'
+        error: 'Failed to process AI request',
+        type: error.name || 'UnknownError',
       }),
       { headers: { 'Content-Type': 'application/json' }, status: 500 }
     );

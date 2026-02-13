@@ -1,30 +1,33 @@
 'use client';
 
 import * as React from 'react';
-import { Change } from 'diff';
+
 import { cn } from '@udecode/cn';
-import { X, GitCompare, Eye, EyeOff } from 'lucide-react';
+import { Change } from 'diff';
+import { Eye, EyeOff, GitCompare, X } from 'lucide-react';
 
 import { Button } from '@/components/plate-ui/button';
 import { DiffResult } from '@/lib/diff-utils';
-
-interface DiffViewProps {
-  diffResult: DiffResult;
-  oldLabel: string;
-  newLabel: string;
-  onClose?: () => void;
-  className?: string;
-}
 
 interface DiffLineProps {
   change: Change;
   index: number;
 }
 
+interface DiffViewProps {
+  diffResult: DiffResult;
+  newLabel: string;
+  oldLabel: string;
+  className?: string;
+  onClose?: () => void;
+}
+
 function DiffLine({ change, index }: DiffLineProps) {
   const getLineClass = () => {
-    if (change.added) return 'bg-green-50 border-l-4 border-green-400 text-green-800';
-    if (change.removed) return 'bg-red-50 border-l-4 border-red-400 text-red-800';
+    if (change.added)
+      return 'bg-green-50 border-l-4 border-green-400 text-green-800';
+    if (change.removed)
+      return 'bg-red-50 border-l-4 border-red-400 text-red-800';
     return 'bg-gray-50';
   };
 
@@ -42,18 +45,18 @@ function DiffLine({ change, index }: DiffLineProps) {
         getLineClass()
       )}
     >
-      <span className="select-none text-gray-400 mr-2">{getPrefix()}</span>
+      <span className="mr-2 text-gray-400 select-none">{getPrefix()}</span>
       {change.value}
     </div>
   );
 }
 
-export function DiffView({ 
-  diffResult, 
-  oldLabel, 
-  newLabel, 
-  onClose, 
-  className 
+export function DiffView({
+  className,
+  diffResult,
+  newLabel,
+  oldLabel,
+  onClose,
 }: DiffViewProps) {
   const [showUnchanged, setShowUnchanged] = React.useState(false);
 
@@ -61,26 +64,28 @@ export function DiffView({
     if (showUnchanged) {
       return diffResult.changes;
     }
-    return diffResult.changes.filter(change => change.added || change.removed);
+    return diffResult.changes.filter(
+      (change) => change.added || change.removed
+    );
   }, [diffResult.changes, showUnchanged]);
 
   if (!diffResult.hasChanges) {
     return (
-      <div className={cn("p-6 bg-white border rounded-lg", className)}>
-        <div className="flex items-center justify-between mb-4">
+      <div className={cn('rounded-lg border bg-white p-6', className)}>
+        <div className="mb-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <GitCompare className="h-5 w-5 text-blue-600" />
             <h3 className="text-lg font-semibold">Comparison</h3>
           </div>
           {onClose && (
-            <Button onClick={onClose} variant="ghost" size="sm">
+            <Button size="sm" variant="ghost" onClick={onClose}>
               <X className="h-4 w-4" />
             </Button>
           )}
         </div>
-        
-        <div className="text-center py-8">
-          <div className="text-gray-500 mb-2">No differences found</div>
+
+        <div className="py-8 text-center">
+          <div className="mb-2 text-gray-500">No differences found</div>
           <div className="text-sm text-gray-400">
             The content in both revisions is identical
           </div>
@@ -90,25 +95,29 @@ export function DiffView({
   }
 
   return (
-    <div className={cn("bg-white border rounded-lg", className)}>
+    <div className={cn('rounded-lg border bg-white', className)}>
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b">
+      <div className="flex items-center justify-between border-b p-4">
         <div className="flex items-center gap-2">
           <GitCompare className="h-5 w-5 text-blue-600" />
           <h3 className="text-lg font-semibold">Comparison</h3>
         </div>
         <div className="flex items-center gap-2">
           <Button
-            onClick={() => setShowUnchanged(!showUnchanged)}
-            variant="outline"
             size="sm"
+            variant="outline"
             className="flex items-center gap-2"
+            onClick={() => setShowUnchanged(!showUnchanged)}
           >
-            {showUnchanged ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            {showUnchanged ? (
+              <EyeOff className="h-4 w-4" />
+            ) : (
+              <Eye className="h-4 w-4" />
+            )}
             {showUnchanged ? 'Hide unchanged' : 'Show unchanged'}
           </Button>
           {onClose && (
-            <Button onClick={onClose} variant="ghost" size="sm">
+            <Button size="sm" variant="ghost" onClick={onClose}>
               <X className="h-4 w-4" />
             </Button>
           )}
@@ -116,7 +125,7 @@ export function DiffView({
       </div>
 
       {/* Comparison Info */}
-      <div className="p-4 bg-gray-50 border-b">
+      <div className="border-b bg-gray-50 p-4">
         <div className="flex items-center justify-between text-sm">
           <div className="flex items-center gap-4">
             <span className="text-gray-600">Comparing:</span>
@@ -126,10 +135,14 @@ export function DiffView({
           </div>
           <div className="flex items-center gap-4 text-xs">
             {diffResult.addedCount > 0 && (
-              <span className="text-green-600">+{diffResult.addedCount} added</span>
+              <span className="text-green-600">
+                +{diffResult.addedCount} added
+              </span>
             )}
             {diffResult.removedCount > 0 && (
-              <span className="text-red-600">-{diffResult.removedCount} removed</span>
+              <span className="text-red-600">
+                -{diffResult.removedCount} removed
+              </span>
             )}
           </div>
         </div>
@@ -151,22 +164,22 @@ export function DiffView({
       </div>
 
       {/* Legend */}
-      <div className="p-4 border-t bg-gray-50">
+      <div className="border-t bg-gray-50 p-4">
         <div className="flex items-center gap-6 text-xs text-gray-600">
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-green-100 border-l-2 border-green-400 rounded-sm"></div>
+            <div className="h-3 w-3 rounded-sm border-l-2 border-green-400 bg-green-100"></div>
             <span>Added</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-red-100 border-l-2 border-red-400 rounded-sm"></div>
+            <div className="h-3 w-3 rounded-sm border-l-2 border-red-400 bg-red-100"></div>
             <span>Removed</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-gray-100 rounded-sm"></div>
+            <div className="h-3 w-3 rounded-sm bg-gray-100"></div>
             <span>Unchanged</span>
           </div>
         </div>
       </div>
     </div>
   );
-} 
+}

@@ -1,23 +1,19 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+
 import { cn } from '@udecode/cn';
-import { 
-  List, 
-  ChevronRight, 
-  ChevronDown, 
-  Hash,
-  X
-} from 'lucide-react';
+import { ChevronDown, ChevronRight, Hash, List, X } from 'lucide-react';
+
 import { Button } from '@/components/plate-ui/button';
 import { useHeadings } from '@/hooks/use-headings';
 
 interface HeadingItem {
   id: string;
-  text: string;
-  level: number;
-  element: HTMLElement;
   children: HeadingItem[];
+  element: HTMLElement;
+  level: number;
+  text: string;
 }
 
 interface IndexSidebarProps {
@@ -26,7 +22,11 @@ interface IndexSidebarProps {
   className?: string;
 }
 
-export function IndexSidebar({ isOpen, onClose, className }: IndexSidebarProps) {
+export function IndexSidebar({
+  className,
+  isOpen,
+  onClose,
+}: IndexSidebarProps) {
   const headings = useHeadings();
   const [activeHeading, setActiveHeading] = useState<string | null>(null);
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
@@ -35,7 +35,7 @@ export function IndexSidebar({ isOpen, onClose, className }: IndexSidebarProps) 
   useEffect(() => {
     const allIds = new Set<string>();
     const collectIds = (items: HeadingItem[]) => {
-      items.forEach(item => {
+      items.forEach((item) => {
         allIds.add(item.id);
         collectIds(item.children);
       });
@@ -47,7 +47,9 @@ export function IndexSidebar({ isOpen, onClose, className }: IndexSidebarProps) 
   // Track active heading based on scroll position
   useEffect(() => {
     const handleScroll = () => {
-      const headingElements = document.querySelectorAll('[data-slate-editor="true"] h1, [data-slate-editor="true"] h2, [data-slate-editor="true"] h3, [data-slate-editor="true"] h4, [data-slate-editor="true"] h5, [data-slate-editor="true"] h6');
+      const headingElements = document.querySelectorAll(
+        '[data-slate-editor="true"] h1, [data-slate-editor="true"] h2, [data-slate-editor="true"] h3, [data-slate-editor="true"] h4, [data-slate-editor="true"] h5, [data-slate-editor="true"] h6'
+      );
       let currentActive: string | null = null;
 
       headingElements.forEach((element) => {
@@ -99,16 +101,16 @@ export function IndexSidebar({ isOpen, onClose, className }: IndexSidebarProps) 
       <div key={item.id} className="select-none">
         <div
           className={cn(
-            'flex items-center gap-1 py-1 px-2 rounded text-sm cursor-pointer hover:bg-gray-100 transition-colors',
-            isActive && 'bg-blue-100 text-blue-700 font-medium',
+            'flex cursor-pointer items-center gap-1 rounded px-2 py-1 text-sm transition-colors hover:bg-gray-100',
+            isActive && 'bg-blue-100 font-medium text-blue-700',
             depth > 0 && 'ml-4'
           )}
           style={{ paddingLeft: `${depth * 16 + 8}px` }}
         >
           {hasChildren && (
             <Button
-              variant="ghost"
               size="sm"
+              variant="ghost"
               className="h-4 w-4 p-0 hover:bg-transparent"
               onClick={(e) => {
                 e.stopPropagation();
@@ -122,17 +124,19 @@ export function IndexSidebar({ isOpen, onClose, className }: IndexSidebarProps) 
               )}
             </Button>
           )}
-          
+
           {!hasChildren && <div className="w-4" />}
-          
-          <Hash className={cn(
-            'h-3 w-3 flex-shrink-0',
-            item.level === 1 && 'text-blue-600',
-            item.level === 2 && 'text-green-600',
-            item.level === 3 && 'text-orange-600',
-            item.level >= 4 && 'text-gray-600'
-          )} />
-          
+
+          <Hash
+            className={cn(
+              'h-3 w-3 flex-shrink-0',
+              item.level === 1 && 'text-blue-600',
+              item.level === 2 && 'text-green-600',
+              item.level === 3 && 'text-orange-600',
+              item.level >= 4 && 'text-gray-600'
+            )}
+          />
+
           <span
             className={cn(
               'flex-1 truncate',
@@ -148,7 +152,7 @@ export function IndexSidebar({ isOpen, onClose, className }: IndexSidebarProps) 
 
         {hasChildren && isExpanded && (
           <div className="ml-2">
-            {item.children.map(child => renderHeadingItem(child, depth + 1))}
+            {item.children.map((child) => renderHeadingItem(child, depth + 1))}
           </div>
         )}
       </div>
@@ -158,21 +162,23 @@ export function IndexSidebar({ isOpen, onClose, className }: IndexSidebarProps) 
   if (!isOpen) return null;
 
   return (
-    <div className={cn(
-      'fixed right-0 top-0 h-full w-80 bg-white border-l border-gray-200 shadow-lg z-40 flex flex-col',
-      className
-    )}>
+    <div
+      className={cn(
+        'fixed top-0 right-0 z-40 flex h-full w-80 flex-col border-l border-gray-200 bg-white shadow-lg',
+        className
+      )}
+    >
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-200">
+      <div className="flex items-center justify-between border-b border-gray-200 p-4">
         <div className="flex items-center gap-2">
           <List className="h-5 w-5 text-blue-600" />
           <h3 className="font-semibold text-gray-900">Table of Contents</h3>
         </div>
         <Button
-          variant="ghost"
           size="sm"
-          onClick={onClose}
+          variant="ghost"
           className="h-8 w-8 p-0"
+          onClick={onClose}
         >
           <X className="h-4 w-4" />
         </Button>
@@ -181,23 +187,23 @@ export function IndexSidebar({ isOpen, onClose, className }: IndexSidebarProps) 
       {/* Content */}
       <div className="flex-1 overflow-y-auto p-4">
         {headings.length === 0 ? (
-          <div className="text-center text-gray-500 py-8">
-            <Hash className="h-8 w-8 mx-auto mb-2 text-gray-300" />
+          <div className="py-8 text-center text-gray-500">
+            <Hash className="mx-auto mb-2 h-8 w-8 text-gray-300" />
             <p className="text-sm">No headings found</p>
-            <p className="text-xs text-gray-400 mt-1">
+            <p className="mt-1 text-xs text-gray-400">
               Add H1, H2, H3 headings to see them here
             </p>
           </div>
         ) : (
           <div className="space-y-1">
-            {headings.map(heading => renderHeadingItem(heading))}
+            {headings.map((heading) => renderHeadingItem(heading))}
           </div>
         )}
       </div>
 
       {/* Footer */}
-      <div className="p-4 border-t border-gray-200 bg-gray-50">
-        <div className="text-xs text-gray-500 space-y-1">
+      <div className="border-t border-gray-200 bg-gray-50 p-4">
+        <div className="space-y-1 text-xs text-gray-500">
           <div className="flex items-center justify-between">
             <span>Total headings:</span>
             <span className="font-medium">{headings.length}</span>
@@ -209,4 +215,4 @@ export function IndexSidebar({ isOpen, onClose, className }: IndexSidebarProps) 
       </div>
     </div>
   );
-} 
+}

@@ -64,8 +64,8 @@ import {
 
 import { copilotPlugins } from '@/components/editor/plugins/copilot-plugins';
 import { editorPlugins } from '@/components/editor/plugins/editor-plugins';
-
 import { FloatingToolbarPlugin } from '@/components/editor/plugins/floating-toolbar-plugin';
+import { PAGE_BREAK_KEY } from '@/components/editor/plugins/page-break-plugin';
 import { AILeaf } from '@/components/plate-ui/ai-leaf';
 import { BlockquoteElement } from '@/components/plate-ui/blockquote-element';
 import { CodeBlockElement } from '@/components/plate-ui/code-block-element';
@@ -93,6 +93,7 @@ import { MediaPlaceholderElement } from '@/components/plate-ui/media-placeholder
 import { MediaVideoElement } from '@/components/plate-ui/media-video-element';
 import { MentionElement } from '@/components/plate-ui/mention-element';
 import { MentionInputElement } from '@/components/plate-ui/mention-input-element';
+import { PageBreakElement } from '@/components/plate-ui/page-break-element';
 import { ParagraphElement } from '@/components/plate-ui/paragraph-element';
 import { withPlaceholders } from '@/components/plate-ui/placeholder';
 import { SlashInputElement } from '@/components/plate-ui/slash-input-element';
@@ -105,8 +106,6 @@ import { TableElement } from '@/components/plate-ui/table-element';
 import { TableRowElement } from '@/components/plate-ui/table-row-element';
 import { TocElement } from '@/components/plate-ui/toc-element';
 import { ToggleElement } from '@/components/plate-ui/toggle-element';
-import { PageBreakElement } from '@/components/plate-ui/page-break-element';
-import { PAGE_BREAK_KEY } from '@/components/editor/plugins/page-break-plugin';
 
 export const viewComponents = {
   [AudioPlugin.key]: MediaAudioElement,
@@ -138,6 +137,7 @@ export const viewComponents = {
   [LinkPlugin.key]: LinkElement,
   [MediaEmbedPlugin.key]: MediaEmbedElement,
   [MentionPlugin.key]: MentionElement,
+  [PAGE_BREAK_KEY]: PageBreakElement,
   [ParagraphPlugin.key]: ParagraphElement,
   [PlaceholderPlugin.key]: MediaPlaceholderElement,
   [StrikethroughPlugin.key]: withProps(PlateLeaf, { as: 's' }),
@@ -152,7 +152,6 @@ export const viewComponents = {
   [TogglePlugin.key]: ToggleElement,
   [UnderlinePlugin.key]: withProps(PlateLeaf, { as: 'u' }),
   [VideoPlugin.key]: MediaVideoElement,
-  [PAGE_BREAK_KEY]: PageBreakElement,
 };
 
 export const editorComponents = {
@@ -185,11 +184,7 @@ export const useCreateEditor = (
         },
         ...override,
       },
-      plugins: [
-        ...copilotPlugins,
-        ...editorPlugins,
-        FloatingToolbarPlugin,
-      ],
+      plugins: [...copilotPlugins, ...editorPlugins, FloatingToolbarPlugin],
       value: [
         {
           children: [{ text: 'Playground' }],

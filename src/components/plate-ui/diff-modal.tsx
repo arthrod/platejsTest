@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+
 import { GitCompare } from 'lucide-react';
 
 import {
@@ -13,25 +14,25 @@ import { DiffView } from '@/components/plate-ui/diff-view';
 import { DiffResult } from '@/lib/diff-utils';
 
 interface DiffModalProps {
-  isOpen: boolean;
-  onClose: () => void;
   diffResult: DiffResult | null;
-  oldLabel: string;
+  isOpen: boolean;
   newLabel: string;
+  oldLabel: string;
+  onClose: () => void;
 }
 
-export function DiffModal({ 
-  isOpen, 
-  onClose, 
-  diffResult, 
-  oldLabel, 
-  newLabel 
+export function DiffModal({
+  diffResult,
+  isOpen,
+  newLabel,
+  oldLabel,
+  onClose,
 }: DiffModalProps) {
   if (!diffResult) return null;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[80vh] p-0">
+      <DialogContent className="max-h-[80vh] max-w-4xl p-0">
         <DialogHeader className="p-6 pb-0">
           <DialogTitle className="flex items-center gap-2">
             <GitCompare className="h-5 w-5" />
@@ -40,13 +41,13 @@ export function DiffModal({
         </DialogHeader>
         <div className="px-6 pb-6">
           <DiffView
-            diffResult={diffResult}
-            oldLabel={oldLabel}
-            newLabel={newLabel}
             onClose={onClose}
+            diffResult={diffResult}
+            newLabel={newLabel}
+            oldLabel={oldLabel}
           />
         </div>
       </DialogContent>
     </Dialog>
   );
-} 
+}
