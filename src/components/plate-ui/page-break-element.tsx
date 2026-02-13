@@ -1,12 +1,13 @@
 'use client';
 
 import React from 'react';
+
 import { cn, withRef } from '@udecode/cn';
 import { PlateElement } from '@udecode/plate/react';
 import { Minus } from 'lucide-react';
 
 export const PageBreakElement = withRef<typeof PlateElement>(
-  ({ className, children, ...props }, ref) => {
+  ({ children, className, ...props }, ref) => {
     return (
       <PlateElement
         ref={ref}
@@ -29,4 +30,4 @@ export const PageBreakElement = withRef<typeof PlateElement>(
       </PlateElement>
     );
   }
-); 
+);

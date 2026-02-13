@@ -10,4 +10,4 @@ export const PageBreakPlugin = createPlatePlugin({
     isElement: true,
     isVoid: true,
   },
-}); 
+});
