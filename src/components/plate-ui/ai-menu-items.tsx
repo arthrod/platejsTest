@@ -47,6 +47,17 @@ export type EditorChatState =
   | 'selectionSuggestion';
 
 export const aiChatItems = {
+  academicWriting: {
+    icon: <GraduationCap />,
+    label: 'Academic & Scholarly',
+    value: 'academicWriting',
+    onSelect: ({ editor }) => {
+      void editor.getApi(AIChatPlugin).aiChat.submit({
+        prompt:
+          'Rewrite this in an academic style. Use formal language, precise terminology, and structured arguments. Maintain objectivity and scholarly tone.',
+      });
+    },
+  },
   accept: {
     icon: <Check />,
     label: 'Accept',
@@ -56,23 +67,14 @@ export const aiChatItems = {
       editor.tf.focus({ edge: 'end' });
     },
   },
-  academicWriting: {
-    icon: <GraduationCap />,
-    label: 'Academic & Scholarly',
-    value: 'academicWriting',
-    onSelect: ({ editor }) => {
-      void editor.getApi(AIChatPlugin).aiChat.submit({
-        prompt: 'Rewrite this in an academic style. Use formal language, precise terminology, and structured arguments. Maintain objectivity and scholarly tone.',
-      });
-    },
-  },
   addEmotionalTone: {
     icon: <Heart />,
     label: 'Add emotional depth',
     value: 'addEmotionalTone',
     onSelect: ({ editor }) => {
       void editor.getApi(AIChatPlugin).aiChat.submit({
-        prompt: 'Enhance this writing by adding emotional depth and resonance. Include sensory details and emotional language that connects with readers.',
+        prompt:
+          'Enhance this writing by adding emotional depth and resonance. Include sensory details and emotional language that connects with readers.',
       });
     },
   },
@@ -82,7 +84,8 @@ export const aiChatItems = {
     value: 'addExamples',
     onSelect: ({ editor }) => {
       void editor.getApi(AIChatPlugin).aiChat.submit({
-        prompt: 'Enhance this by adding relevant examples, specific details, and concrete illustrations to make the points clearer and more relatable.',
+        prompt:
+          'Enhance this by adding relevant examples, specific details, and concrete illustrations to make the points clearer and more relatable.',
       });
     },
   },
@@ -92,17 +95,8 @@ export const aiChatItems = {
     value: 'businessWriting',
     onSelect: ({ editor }) => {
       void editor.getApi(AIChatPlugin).aiChat.submit({
-        prompt: 'Rewrite this in a professional business style. Use clear, concise language appropriate for corporate communication. Maintain formality while being engaging.',
-      });
-    },
-  },
-  conversationalTone: {
-    icon: <MessageSquare />,
-    label: 'Conversational',
-    value: 'conversationalTone',
-    onSelect: ({ editor }) => {
-      void editor.getApi(AIChatPlugin).aiChat.submit({
-        prompt: 'Rewrite this in a friendly, conversational tone. Use natural language, contractions, and a warm, approachable style as if talking to a friend.',
+        prompt:
+          'Rewrite this in a professional business style. Use clear, concise language appropriate for corporate communication. Maintain formality while being engaging.',
       });
     },
   },
@@ -128,13 +122,25 @@ Start writing a new paragraph AFTER <Document> ONLY ONE SENTENCE`
       });
     },
   },
+  conversationalTone: {
+    icon: <MessageSquare />,
+    label: 'Conversational',
+    value: 'conversationalTone',
+    onSelect: ({ editor }) => {
+      void editor.getApi(AIChatPlugin).aiChat.submit({
+        prompt:
+          'Rewrite this in a friendly, conversational tone. Use natural language, contractions, and a warm, approachable style as if talking to a friend.',
+      });
+    },
+  },
   creativeWriting: {
     icon: <Sparkles />,
     label: 'Creative & Engaging',
     value: 'creativeWriting',
     onSelect: ({ editor }) => {
       void editor.getApi(AIChatPlugin).aiChat.submit({
-        prompt: 'Rewrite this with creative flair. Use vivid imagery, engaging metaphors, and dynamic language to make it more compelling and memorable.',
+        prompt:
+          'Rewrite this with creative flair. Use vivid imagery, engaging metaphors, and dynamic language to make it more compelling and memorable.',
       });
     },
   },
@@ -187,7 +193,8 @@ Start writing a new paragraph AFTER <Document> ONLY ONE SENTENCE`
     value: 'improveFlow',
     onSelect: ({ editor }) => {
       void editor.getApi(AIChatPlugin).aiChat.submit({
-        prompt: 'Improve the flow and transitions in this text. Add smooth connections between ideas and ensure logical progression throughout.',
+        prompt:
+          'Improve the flow and transitions in this text. Add smooth connections between ideas and ensure logical progression throughout.',
       });
     },
   },
@@ -197,7 +204,8 @@ Start writing a new paragraph AFTER <Document> ONLY ONE SENTENCE`
     value: 'improveWriting',
     onSelect: ({ editor }) => {
       void editor.getApi(AIChatPlugin).aiChat.submit({
-        prompt: 'Improve the writing while maintaining the original tone and meaning. Focus on clarity, flow, and engagement.',
+        prompt:
+          'Improve the writing while maintaining the original tone and meaning. Focus on clarity, flow, and engagement.',
       });
     },
   },
@@ -215,7 +223,8 @@ Start writing a new paragraph AFTER <Document> ONLY ONE SENTENCE`
     value: 'journalismStyle',
     onSelect: ({ editor }) => {
       void editor.getApi(AIChatPlugin).aiChat.submit({
-        prompt: 'Rewrite this in journalistic style. Use clear, factual language with strong leads, concise paragraphs, and objective reporting tone.',
+        prompt:
+          'Rewrite this in journalistic style. Use clear, factual language with strong leads, concise paragraphs, and objective reporting tone.',
       });
     },
   },
@@ -225,7 +234,8 @@ Start writing a new paragraph AFTER <Document> ONLY ONE SENTENCE`
     value: 'legalStyle',
     onSelect: ({ editor }) => {
       void editor.getApi(AIChatPlugin).aiChat.submit({
-        prompt: 'Rewrite this in formal legal style. Use precise legal terminology, structured arguments, and formal language appropriate for legal documents.',
+        prompt:
+          'Rewrite this in formal legal style. Use precise legal terminology, structured arguments, and formal language appropriate for legal documents.',
       });
     },
   },
@@ -245,7 +255,8 @@ Start writing a new paragraph AFTER <Document> ONLY ONE SENTENCE`
     value: 'makeMoreConcise',
     onSelect: ({ editor }) => {
       void editor.getApi(AIChatPlugin).aiChat.submit({
-        prompt: 'Make this more concise and impactful. Remove unnecessary words, combine related ideas, and strengthen the core message.',
+        prompt:
+          'Make this more concise and impactful. Remove unnecessary words, combine related ideas, and strengthen the core message.',
       });
     },
   },
@@ -265,7 +276,8 @@ Start writing a new paragraph AFTER <Document> ONLY ONE SENTENCE`
     value: 'persuasiveWriting',
     onSelect: ({ editor }) => {
       void editor.getApi(AIChatPlugin).aiChat.submit({
-        prompt: 'Rewrite this to be more persuasive and compelling. Use strong arguments, emotional appeals, and convincing language to influence the reader.',
+        prompt:
+          'Rewrite this to be more persuasive and compelling. Use strong arguments, emotional appeals, and convincing language to influence the reader.',
       });
     },
   },
@@ -287,6 +299,17 @@ Start writing a new paragraph AFTER <Document> ONLY ONE SENTENCE`
       });
     },
   },
+  storytellingStyle: {
+    icon: <BookOpen />,
+    label: 'Storytelling',
+    value: 'storytellingStyle',
+    onSelect: ({ editor }) => {
+      void editor.getApi(AIChatPlugin).aiChat.submit({
+        prompt:
+          'Rewrite this as a compelling story. Use narrative techniques, character development, and engaging plot structure to make it more captivating.',
+      });
+    },
+  },
   summarize: {
     icon: <Album />,
     label: 'Add a summary',
@@ -301,23 +324,14 @@ Start writing a new paragraph AFTER <Document> ONLY ONE SENTENCE`
       });
     },
   },
-  storytellingStyle: {
-    icon: <BookOpen />,
-    label: 'Storytelling',
-    value: 'storytellingStyle',
-    onSelect: ({ editor }) => {
-      void editor.getApi(AIChatPlugin).aiChat.submit({
-        prompt: 'Rewrite this as a compelling story. Use narrative techniques, character development, and engaging plot structure to make it more captivating.',
-      });
-    },
-  },
   technicalWriting: {
     icon: <Zap />,
     label: 'Technical & Precise',
     value: 'technicalWriting',
     onSelect: ({ editor }) => {
       void editor.getApi(AIChatPlugin).aiChat.submit({
-        prompt: 'Rewrite this in technical writing style. Use precise terminology, clear step-by-step explanations, and logical structure for technical accuracy.',
+        prompt:
+          'Rewrite this in technical writing style. Use precise terminology, clear step-by-step explanations, and logical structure for technical accuracy.',
       });
     },
   },

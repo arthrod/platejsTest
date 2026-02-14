@@ -7,18 +7,21 @@ This document describes the ruler plugin implementation that adds ruler, page se
 ### 🔧 Core Components
 
 1. **Ruler Component** (`src/components/plate-ui/ruler.tsx`)
+
    - Visual ruler with major and minor tick marks
    - Support for different units (px, in, cm)
    - Margin indicators
    - Configurable width and scale
 
 2. **Layout Wrapper** (`src/components/plate-ui/layout-wrapper.tsx`)
+
    - Single-page layout with configurable dimensions
    - Ruler integration
    - Page setup dialog integration
    - Responsive design with proper margins
 
 3. **Multi-Page Layout** (`src/components/plate-ui/multi-page-layout.tsx`)
+
    - Multi-page layout with automatic page breaks
    - Content flows across multiple pages
    - Dynamic page count calculation
@@ -40,11 +43,13 @@ This document describes the ruler plugin implementation that adds ruler, page se
 ### 🏗️ Plugin Architecture
 
 1. **Layout Plugin** (`src/components/editor/plugins/layout-plugin.tsx`)
+
    - Integrates with Plate.js plugin system
    - Wraps editor content with layout functionality
    - Conditionally applies page layout based on mode
 
 2. **Layout Store** (`src/lib/layout-store.ts`)
+
    - Zustand-based state management
    - Manages ruler visibility, page setup, and layout mode
    - Persists page configuration
@@ -59,12 +64,14 @@ This document describes the ruler plugin implementation that adds ruler, page se
 The plugin is already integrated into the editor. The following files were added/modified:
 
 ### New Files Created:
+
 - `src/components/plate-ui/layout-toolbar-buttons.tsx`
 - `src/components/plate-ui/multi-page-layout.tsx`
 - `src/components/editor/plugins/layout-plugin.tsx`
 - `src/lib/layout-store.ts`
 
 ### Modified Files:
+
 - `src/components/editor/plugins/editor-plugins.tsx` - Added LayoutPlugin
 - `src/components/plate-ui/fixed-toolbar-buttons.tsx` - Added toolbar buttons
 
@@ -80,17 +87,20 @@ The plugin is already integrated into the editor. The following files were added
 ### Page Layout Mode
 
 When in page layout mode:
+
 - Content is constrained to page dimensions
 - Ruler shows page width with margin indicators
 - Page setup controls are available
 - Content is centered with proper margins
 
 #### Single Page Mode
+
 - Content is contained within one page
 - Overflow content is scrollable within the page
 - Best for shorter documents
 
 #### Multi-Page Mode
+
 - Content automatically flows across multiple pages
 - Dynamic page count calculation based on content height
 - Page numbers displayed on each page
@@ -99,6 +109,7 @@ When in page layout mode:
 ### Web Layout Mode
 
 When in web layout mode:
+
 - Content flows naturally without page constraints
 - Ruler and page setup are hidden
 - Standard web-based editing experience
@@ -126,7 +137,7 @@ const defaultPageConfig: PageSetupConfig = {
 ### Supported Paper Sizes
 
 - **Letter**: 8.5" × 11"
-- **A4**: 21cm × 29.7cm  
+- **A4**: 21cm × 29.7cm
 - **Legal**: 8.5" × 14"
 - **Custom**: User-defined dimensions
 
@@ -142,11 +153,11 @@ The plugin uses Zustand for state management with the following state:
 
 ```typescript
 interface LayoutState {
-  showRuler: boolean;           // Ruler visibility
-  showPageSetup: boolean;       // Page setup dialog visibility
-  layoutMode: 'page' | 'web';   // Current layout mode
-  multiPageMode: boolean;       // Single vs multi-page mode
-  pageConfig: PageSetupConfig;  // Page configuration
+  showRuler: boolean; // Ruler visibility
+  showPageSetup: boolean; // Page setup dialog visibility
+  layoutMode: 'page' | 'web'; // Current layout mode
+  multiPageMode: boolean; // Single vs multi-page mode
+  pageConfig: PageSetupConfig; // Page configuration
   // ... action methods
 }
 ```
@@ -156,6 +167,7 @@ interface LayoutState {
 The ruler and layout components use Tailwind CSS classes and are designed to integrate seamlessly with the existing Plate.js UI components.
 
 ### Key Style Features:
+
 - Responsive design
 - Proper contrast and accessibility
 - Consistent with existing UI patterns
@@ -173,16 +185,19 @@ The ruler and layout components use Tailwind CSS classes and are designed to int
 Potential improvements for the ruler plugin:
 
 1. **Ruler Interactions**
+
    - Drag to adjust margins
    - Click to set tab stops
    - Indent guides
 
 2. **Advanced Page Setup**
+
    - Headers and footers
    - Page numbering
    - Multiple page sizes in one document
 
 3. **Print Integration**
+
    - Print preview
    - Page break indicators
    - Print-specific styling
@@ -206,7 +221,7 @@ Use browser dev tools to inspect the layout store state:
 
 ```javascript
 // In browser console
-window.__ZUSTAND_DEVTOOLS__ // If devtools are enabled
+window.__ZUSTAND_DEVTOOLS__; // If devtools are enabled
 ```
 
 ## API Reference
@@ -220,4 +235,4 @@ window.__ZUSTAND_DEVTOOLS__ // If devtools are enabled
 
 ### Component Props
 
-See individual component files for detailed prop interfaces and usage examples. 
+See individual component files for detailed prop interfaces and usage examples.

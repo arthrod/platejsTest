@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+
 import { createPlatePlugin } from '@udecode/plate/react';
 
 import { LayoutWrapper } from '@/components/plate-ui/layout-wrapper';
@@ -8,13 +9,13 @@ import { MultiPageLayout } from '@/components/plate-ui/multi-page-layout';
 import { useLayoutStore } from '@/lib/layout-store';
 
 function LayoutProvider({ children }: { children: React.ReactNode }) {
-  const { 
-    showRuler, 
-    showPageSetup, 
-    layoutMode, 
+  const {
+    layoutMode,
     multiPageMode,
-    pageConfig, 
-    setPageConfig 
+    pageConfig,
+    setPageConfig,
+    showPageSetup,
+    showRuler,
   } = useLayoutStore();
 
   // If in web layout mode, just render children without wrapper
@@ -24,13 +25,13 @@ function LayoutProvider({ children }: { children: React.ReactNode }) {
 
   // In page layout mode, choose between single and multi-page layout
   const LayoutComponent = multiPageMode ? MultiPageLayout : LayoutWrapper;
-  
+
   return (
     <LayoutComponent
-      config={pageConfig}
       onConfigChange={setPageConfig}
-      showRuler={showRuler}
+      config={pageConfig}
       showPageSetup={showPageSetup}
+      showRuler={showRuler}
     >
       {children}
     </LayoutComponent>
@@ -44,4 +45,4 @@ export const LayoutPlugin = createPlatePlugin({
       <LayoutProvider>{children}</LayoutProvider>
     ),
   },
-}); 
+});

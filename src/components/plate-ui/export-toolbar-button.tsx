@@ -69,9 +69,15 @@ import {
 } from '@udecode/plate-table';
 import { BaseTogglePlugin } from '@udecode/plate-toggle';
 import { useEditorRef } from '@udecode/plate/react';
+import { saveAs } from 'file-saver';
+import JSZip from 'jszip';
 import { ArrowDownToLineIcon } from 'lucide-react';
 import Prism from 'prismjs';
 
+import {
+  PAGE_BREAK_KEY,
+  PageBreakPlugin,
+} from '@/components/editor/plugins/page-break-plugin';
 import { BlockquoteElementStatic } from '@/components/plate-ui/blockquote-element-static';
 import { CodeBlockElementStatic } from '@/components/plate-ui/code-block-element-static';
 import { CodeLeafStatic } from '@/components/plate-ui/code-leaf-static';
@@ -109,6 +115,14 @@ import { TableRowElementStatic } from '@/components/plate-ui/table-row-element-s
 import { TocElementStatic } from '@/components/plate-ui/toc-element-static';
 import { ToggleElementStatic } from '@/components/plate-ui/toggle-element-static';
 
+import { Button } from './button';
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from './dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -120,14 +134,8 @@ import {
 import { EditorStatic } from './editor-static';
 import { EquationElementStatic } from './equation-element-static';
 import { InlineEquationElementStatic } from './inline-equation-element-static';
-import { ToolbarButton } from './toolbar';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from './dialog';
-import { Button } from './button';
 import { Input } from './input';
-import JSZip from 'jszip';
-import { saveAs } from 'file-saver';
-import { PageBreakPlugin, PAGE_BREAK_KEY } from '@/components/editor/plugins/page-break-plugin';
-import { PageBreakElement } from './page-break-element';
+import { ToolbarButton } from './toolbar';
 
 const siteUrl = 'https://platejs.org';
 
@@ -136,7 +144,9 @@ export function ExportToolbarButton({ children, ...props }: DropdownMenuProps) {
   const openState = useOpenState();
   const [showFileNameDialog, setShowFileNameDialog] = React.useState(false);
   const [fileName, setFileName] = React.useState('');
-  const [exportType, setExportType] = React.useState<'pdf' | 'docx' | 'epub' | 'html' | 'image' | 'markdown'>('pdf');
+  const [exportType, setExportType] = React.useState<
+    'docx' | 'epub' | 'html' | 'image' | 'markdown' | 'pdf'
+  >('pdf');
   const [isExporting, setIsExporting] = React.useState(false);
 
   const getCanvas = async () => {
@@ -182,16 +192,18 @@ export function ExportToolbarButton({ children, ...props }: DropdownMenuProps) {
     window.URL.revokeObjectURL(blobUrl);
   };
 
-  const promptForFileName = (type: 'pdf' | 'docx' | 'epub' | 'html' | 'image' | 'markdown') => {
+  const promptForFileName = (
+    type: 'docx' | 'epub' | 'html' | 'image' | 'markdown' | 'pdf'
+  ) => {
     const defaultNames = {
-      pdf: 'document.pdf',
       docx: 'document.docx',
       epub: 'document.epub',
       html: 'document.html',
       image: 'document.png',
-      markdown: 'document.md'
+      markdown: 'document.md',
+      pdf: 'document.pdf',
     };
-    
+
     setExportType(type);
     setFileName(defaultNames[type]);
     setShowFileNameDialog(true);
@@ -199,15 +211,12 @@ export function ExportToolbarButton({ children, ...props }: DropdownMenuProps) {
 
   const handleExport = async () => {
     if (!fileName.trim()) return;
-    
+
     setIsExporting(true);
     setShowFileNameDialog(false);
-    
+
     try {
       switch (exportType) {
-        case 'pdf':
-          await exportToPdfPrint();
-          break;
         case 'docx':
           await exportToDocx();
           break;
@@ -223,6 +232,9 @@ export function ExportToolbarButton({ children, ...props }: DropdownMenuProps) {
         case 'markdown':
           await exportToMarkdown();
           break;
+        case 'pdf':
+          await exportToPdfPrint();
+          break;
       }
     } catch (error) {
       console.error('Export failed:', error);
@@ -235,19 +247,21 @@ export function ExportToolbarButton({ children, ...props }: DropdownMenuProps) {
   const exportToPdfPrint = async () => {
     // Generate print-optimized HTML content
     const htmlContent = await generatePrintOptimizedHtml();
-    
+
     try {
       // Create a temporary window for printing
       const printWindow = window.open('', '_blank');
       if (!printWindow) {
-        throw new Error('Unable to open print window. Please allow popups for this site.');
+        throw new Error(
+          'Unable to open print window. Please allow popups for this site.'
+        );
       }
 
       printWindow.document.write(htmlContent);
       printWindow.document.close();
 
       // Wait for content to load
-      await new Promise(resolve => {
+      await new Promise((resolve) => {
         printWindow.onload = resolve;
         setTimeout(resolve, 1000); // Fallback timeout
       });
@@ -255,14 +269,16 @@ export function ExportToolbarButton({ children, ...props }: DropdownMenuProps) {
       // Focus and print
       printWindow.focus();
       printWindow.print();
-      
+
       // Close the window after a delay to allow printing to complete
       setTimeout(() => {
         printWindow.close();
       }, 1000);
     } catch (error) {
       console.error('Print PDF export failed:', error);
-      alert(`Print PDF export failed: ${error.message}\n\nFalling back to image-based PDF generation.`);
+      alert(
+        `Print PDF export failed: ${error.message}\n\nFalling back to image-based PDF generation.`
+      );
       // Fallback to client-side PDF generation (image-based)
       await exportToPdfFallback();
     }
@@ -292,16 +308,18 @@ export function ExportToolbarButton({ children, ...props }: DropdownMenuProps) {
       // Try to use docx library for DOCX generation
       try {
         const docx = await import('docx');
-        const { Document, Packer, Paragraph, TextRun, HeadingLevel } = docx;
-        
+        const { Document, HeadingLevel, Packer, Paragraph, TextRun } = docx;
+
         // Convert editor content to DOCX format
         const docxContent = await convertEditorToDocx(docx);
-        
+
         const doc = new Document({
-          sections: [{
-            properties: {},
-            children: docxContent,
-          }],
+          sections: [
+            {
+              children: docxContent,
+              properties: {},
+            },
+          ],
         });
 
         const blob = await Packer.toBlob(doc);
@@ -315,12 +333,14 @@ export function ExportToolbarButton({ children, ...props }: DropdownMenuProps) {
       }
     } catch (error) {
       console.error('DOCX export failed:', error);
-      alert('DOCX export failed. Please install the "docx" package for full DOCX support, or the file will be exported as HTML.');
+      alert(
+        'DOCX export failed. Please install the "docx" package for full DOCX support, or the file will be exported as HTML.'
+      );
     }
   };
 
   const convertEditorToDocx = async (docx: any) => {
-    const { Paragraph, TextRun, HeadingLevel } = docx;
+    const { HeadingLevel, Paragraph, TextRun } = docx;
     const paragraphs: any[] = [];
 
     const processNode = (node: any): any[] => {
@@ -331,28 +351,39 @@ export function ExportToolbarButton({ children, ...props }: DropdownMenuProps) {
         if (node.children) {
           node.children.forEach((child: any) => {
             if (child.text) {
-              runs.push(new TextRun({
-                text: child.text,
-                bold: child.bold,
-                italics: child.italic,
-                underline: child.underline ? {} : undefined,
-              }));
+              runs.push(
+                new TextRun({
+                  bold: child.bold,
+                  italics: child.italic,
+                  text: child.text,
+                  underline: child.underline ? {} : undefined,
+                })
+              );
             }
           });
         }
         result.push(new Paragraph({ children: runs }));
       } else if (node.type?.startsWith('h')) {
         const level = parseInt(node.type.charAt(1));
-        const text = node.children?.map((child: any) => child.text).join('') || '';
-        result.push(new Paragraph({
-          text,
-          heading: level === 1 ? HeadingLevel.HEADING_1 :
-                  level === 2 ? HeadingLevel.HEADING_2 :
-                  level === 3 ? HeadingLevel.HEADING_3 :
-                  level === 4 ? HeadingLevel.HEADING_4 :
-                  level === 5 ? HeadingLevel.HEADING_5 :
-                  HeadingLevel.HEADING_6,
-        }));
+        const text =
+          node.children?.map((child: any) => child.text).join('') || '';
+        result.push(
+          new Paragraph({
+            heading:
+              level === 1
+                ? HeadingLevel.HEADING_1
+                : level === 2
+                  ? HeadingLevel.HEADING_2
+                  : level === 3
+                    ? HeadingLevel.HEADING_3
+                    : level === 4
+                      ? HeadingLevel.HEADING_4
+                      : level === 5
+                        ? HeadingLevel.HEADING_5
+                        : HeadingLevel.HEADING_6,
+            text,
+          })
+        );
       } else if (node.children) {
         node.children.forEach((child: any) => {
           result.push(...processNode(child));
@@ -404,17 +435,19 @@ export function ExportToolbarButton({ children, ...props }: DropdownMenuProps) {
       [BaseTogglePlugin.key]: ToggleElementStatic,
       [BaseUnderlinePlugin.key]: withProps(SlateLeaf, { as: 'u' }),
       [BaseVideoPlugin.key]: MediaVideoElementStatic,
-      [PAGE_BREAK_KEY]: ({ children }: any) => (
-        <div style={{ pageBreakBefore: 'always', height: '0', overflow: 'hidden' }}>
-          {children}
-        </div>
-      ),
       [HEADING_KEYS.h1]: withProps(HeadingElementStatic, { variant: 'h1' }),
       [HEADING_KEYS.h2]: withProps(HeadingElementStatic, { variant: 'h2' }),
       [HEADING_KEYS.h3]: withProps(HeadingElementStatic, { variant: 'h3' }),
       [HEADING_KEYS.h4]: withProps(HeadingElementStatic, { variant: 'h4' }),
       [HEADING_KEYS.h5]: withProps(HeadingElementStatic, { variant: 'h5' }),
       [HEADING_KEYS.h6]: withProps(HeadingElementStatic, { variant: 'h6' }),
+      [PAGE_BREAK_KEY]: ({ children }: any) => (
+        <div
+          style={{ height: '0', overflow: 'hidden', pageBreakBefore: 'always' }}
+        >
+          {children}
+        </div>
+      ),
     };
 
     const editorStatic = createSlateEditor({
@@ -668,17 +701,19 @@ export function ExportToolbarButton({ children, ...props }: DropdownMenuProps) {
       [BaseTogglePlugin.key]: ToggleElementStatic,
       [BaseUnderlinePlugin.key]: withProps(SlateLeaf, { as: 'u' }),
       [BaseVideoPlugin.key]: MediaVideoElementStatic,
-      [PAGE_BREAK_KEY]: ({ children }: any) => (
-        <div style={{ pageBreakBefore: 'always', height: '0', overflow: 'hidden' }}>
-          {children}
-        </div>
-      ),
       [HEADING_KEYS.h1]: withProps(HeadingElementStatic, { variant: 'h1' }),
       [HEADING_KEYS.h2]: withProps(HeadingElementStatic, { variant: 'h2' }),
       [HEADING_KEYS.h3]: withProps(HeadingElementStatic, { variant: 'h3' }),
       [HEADING_KEYS.h4]: withProps(HeadingElementStatic, { variant: 'h4' }),
       [HEADING_KEYS.h5]: withProps(HeadingElementStatic, { variant: 'h5' }),
       [HEADING_KEYS.h6]: withProps(HeadingElementStatic, { variant: 'h6' }),
+      [PAGE_BREAK_KEY]: ({ children }: any) => (
+        <div
+          style={{ height: '0', overflow: 'hidden', pageBreakBefore: 'always' }}
+        >
+          {children}
+        </div>
+      ),
     };
 
     const editorStatic = createSlateEditor({
@@ -775,7 +810,7 @@ export function ExportToolbarButton({ children, ...props }: DropdownMenuProps) {
     const editorHtml = await serializeHtml(editorStatic, {
       components,
       editorComponent: EditorStatic,
-      props: { style: { padding: '0', margin: '0' } },
+      props: { style: { margin: '0', padding: '0' } },
     });
 
     const prismCss = `<link rel="stylesheet" href="${siteUrl}/prism.css">`;
@@ -976,21 +1011,26 @@ export function ExportToolbarButton({ children, ...props }: DropdownMenuProps) {
 
       // EPUB structure
       zip.file('mimetype', 'application/epub+zip');
-      
+
       // META-INF
       const metaInf = zip.folder('META-INF');
-      metaInf?.file('container.xml', `<?xml version="1.0"?>
+      metaInf?.file(
+        'container.xml',
+        `<?xml version="1.0"?>
 <container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container">
   <rootfiles>
     <rootfile full-path="OEBPS/content.opf" media-type="application/oebps-package+xml"/>
   </rootfiles>
-</container>`);
+</container>`
+      );
 
       // OEBPS
       const oebps = zip.folder('OEBPS');
-      
+
       // content.opf
-      oebps?.file('content.opf', `<?xml version="1.0" encoding="UTF-8"?>
+      oebps?.file(
+        'content.opf',
+        `<?xml version="1.0" encoding="UTF-8"?>
 <package xmlns="http://www.idpf.org/2007/opf" unique-identifier="BookId" version="2.0">
   <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
     <dc:title>${title}</dc:title>
@@ -1005,10 +1045,13 @@ export function ExportToolbarButton({ children, ...props }: DropdownMenuProps) {
   <spine toc="ncx">
     <itemref idref="content"/>
   </spine>
-</package>`);
+</package>`
+      );
 
       // toc.ncx
-      oebps?.file('toc.ncx', `<?xml version="1.0" encoding="UTF-8"?>
+      oebps?.file(
+        'toc.ncx',
+        `<?xml version="1.0" encoding="UTF-8"?>
 <ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1">
   <head>
     <meta name="dtb:uid" content="urn:uuid:${Date.now()}"/>
@@ -1020,7 +1063,8 @@ export function ExportToolbarButton({ children, ...props }: DropdownMenuProps) {
       <content src="content.xhtml"/>
     </navPoint>
   </navMap>
-</ncx>`);
+</ncx>`
+      );
 
       // Content file
       const cleanContent = content
@@ -1028,7 +1072,9 @@ export function ExportToolbarButton({ children, ...props }: DropdownMenuProps) {
         .replace(/<style[^>]*>[\s\S]*?<\/style>/g, '') // Remove style blocks
         .replace(/<script[^>]*>[\s\S]*?<\/script>/g, ''); // Remove scripts
 
-      oebps?.file('content.xhtml', `<?xml version="1.0" encoding="UTF-8"?>
+      oebps?.file(
+        'content.xhtml',
+        `<?xml version="1.0" encoding="UTF-8"?>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <title>${title}</title>
@@ -1046,7 +1092,8 @@ export function ExportToolbarButton({ children, ...props }: DropdownMenuProps) {
 <body>
   ${cleanContent.replace(/.*<body[^>]*>/, '').replace(/<\/body>.*/, '')}
 </body>
-</html>`);
+</html>`
+      );
 
       const epubBlob = await zip.generateAsync({ type: 'blob' });
       saveAs(epubBlob, fileName);
@@ -1058,18 +1105,18 @@ export function ExportToolbarButton({ children, ...props }: DropdownMenuProps) {
 
   return (
     <>
-    <DropdownMenu modal={false} {...openState} {...props}>
-      <DropdownMenuTrigger asChild>
-        <ToolbarButton pressed={openState.open} tooltip="Export" isDropdown>
-          <ArrowDownToLineIcon className="size-4" />
-        </ToolbarButton>
-      </DropdownMenuTrigger>
+      <DropdownMenu modal={false} {...openState} {...props}>
+        <DropdownMenuTrigger asChild>
+          <ToolbarButton pressed={openState.open} tooltip="Export" isDropdown>
+            <ArrowDownToLineIcon className="size-4" />
+          </ToolbarButton>
+        </DropdownMenuTrigger>
 
-      <DropdownMenuContent align="start">
-        <DropdownMenuGroup>
+        <DropdownMenuContent align="start">
+          <DropdownMenuGroup>
             <DropdownMenuItem onSelect={() => promptForFileName('html')}>
-            Export as HTML
-          </DropdownMenuItem>
+              Export as HTML
+            </DropdownMenuItem>
             <DropdownMenuItem onSelect={() => promptForFileName('pdf')}>
               Export as PDF (Print)
             </DropdownMenuItem>
@@ -1078,16 +1125,16 @@ export function ExportToolbarButton({ children, ...props }: DropdownMenuProps) {
             </DropdownMenuItem>
             <DropdownMenuItem onSelect={() => promptForFileName('epub')}>
               Export as EPUB
-          </DropdownMenuItem>
+            </DropdownMenuItem>
             <DropdownMenuItem onSelect={() => promptForFileName('image')}>
-            Export as Image
-          </DropdownMenuItem>
+              Export as Image
+            </DropdownMenuItem>
             <DropdownMenuItem onSelect={() => promptForFileName('markdown')}>
-            Export as Markdown
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
+              Export as Markdown
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
 
       <Dialog open={showFileNameDialog} onOpenChange={setShowFileNameDialog}>
         <DialogContent className="sm:max-w-md">
@@ -1096,34 +1143,34 @@ export function ExportToolbarButton({ children, ...props }: DropdownMenuProps) {
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <label htmlFor="filename" className="text-sm font-medium">
+              <label className="text-sm font-medium" htmlFor="filename">
                 File name:
               </label>
               <Input
                 id="filename"
+                className="mt-1"
                 value={fileName}
                 onChange={(e) => setFileName(e.target.value)}
-                placeholder="Enter file name..."
-                className="mt-1"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && !isExporting) {
                     handleExport();
                   }
                 }}
+                placeholder="Enter file name..."
               />
             </div>
           </div>
           <DialogFooter>
             <Button
               variant="outline"
-              onClick={() => setShowFileNameDialog(false)}
               disabled={isExporting}
+              onClick={() => setShowFileNameDialog(false)}
             >
               Cancel
             </Button>
             <Button
-              onClick={handleExport}
               disabled={!fileName.trim() || isExporting}
+              onClick={handleExport}
             >
               {isExporting ? 'Exporting...' : 'Export'}
             </Button>
