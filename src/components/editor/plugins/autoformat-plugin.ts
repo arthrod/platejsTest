@@ -38,6 +38,7 @@ import {
 } from '@udecode/plate-indent-list';
 import { openNextToggles, TogglePlugin } from '@udecode/plate-toggle/react';
 import { ParagraphPlugin } from '@udecode/plate/react';
+
 import { PAGE_BREAK_KEY } from './page-break-plugin';
 
 export const format = (editor: SlateEditor, customFormatting: any) => {

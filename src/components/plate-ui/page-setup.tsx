@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
-import { cn } from '@udecode/cn';
-import { Settings, FileText, Ruler, Layout } from 'lucide-react';
+
+import { FileText, Settings } from 'lucide-react';
+
 import { Button } from './button';
 import {
   Dialog,
@@ -15,17 +16,17 @@ import {
 // Using simpler HTML elements instead of complex UI components
 
 export interface PageSetupConfig {
-  paperSize: 'letter' | 'a4' | 'legal' | 'custom';
-  orientation: 'portrait' | 'landscape';
   margins: {
-    top: number;
     bottom: number;
     left: number;
     right: number;
+    top: number;
   };
-  width?: number;
+  orientation: 'landscape' | 'portrait';
+  paperSize: 'a4' | 'custom' | 'legal' | 'letter';
+  unit: 'cm' | 'in' | 'px';
   height?: number;
-  unit: 'px' | 'in' | 'cm';
+  width?: number;
 }
 
 interface PageSetupProps {
@@ -35,38 +36,41 @@ interface PageSetupProps {
 }
 
 const PAPER_SIZES = {
-  letter: { width: 8.5, height: 11, unit: 'in' as const },
-  a4: { width: 21, height: 29.7, unit: 'cm' as const },
-  legal: { width: 8.5, height: 14, unit: 'in' as const },
-  custom: { width: 8.5, height: 11, unit: 'in' as const },
+  a4: { height: 29.7, unit: 'cm' as const, width: 21 },
+  custom: { height: 11, unit: 'in' as const, width: 8.5 },
+  legal: { height: 14, unit: 'in' as const, width: 8.5 },
+  letter: { height: 11, unit: 'in' as const, width: 8.5 },
 };
 
-export function PageSetup({ config, onChange, className }: PageSetupProps) {
+export function PageSetup({ className, config, onChange }: PageSetupProps) {
   const [open, setOpen] = useState(false);
 
   const handlePaperSizeChange = (paperSize: keyof typeof PAPER_SIZES) => {
     const size = PAPER_SIZES[paperSize];
     const newConfig = {
       ...config,
+      height: config.orientation === 'landscape' ? size.width : size.height,
       paperSize,
       unit: size.unit,
       width: config.orientation === 'landscape' ? size.height : size.width,
-      height: config.orientation === 'landscape' ? size.width : size.height,
     };
     onChange(newConfig);
   };
 
-  const handleOrientationChange = (orientation: 'portrait' | 'landscape') => {
+  const handleOrientationChange = (orientation: 'landscape' | 'portrait') => {
     const newConfig = {
       ...config,
+      height: orientation === 'landscape' ? config.width : config.height,
       orientation,
       width: orientation === 'landscape' ? config.height : config.width,
-      height: orientation === 'landscape' ? config.width : config.height,
     };
     onChange(newConfig);
   };
 
-  const handleMarginChange = (side: keyof PageSetupConfig['margins'], value: number) => {
+  const handleMarginChange = (
+    side: keyof PageSetupConfig['margins'],
+    value: number
+  ) => {
     onChange({
       ...config,
       margins: {
@@ -79,8 +83,8 @@ export function PageSetup({ config, onChange, className }: PageSetupProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className={className}>
-          <Settings className="h-4 w-4 mr-2" />
+        <Button size="sm" variant="outline" className={className}>
+          <Settings className="mr-2 h-4 w-4" />
           Page Setup
         </Button>
       </DialogTrigger>
@@ -97,12 +101,18 @@ export function PageSetup({ config, onChange, className }: PageSetupProps) {
 
         <div className="space-y-4">
           <div className="space-y-2">
-            <label htmlFor="paper-size" className="text-sm font-medium">Paper Size</label>
+            <label className="text-sm font-medium" htmlFor="paper-size">
+              Paper Size
+            </label>
             <select
               id="paper-size"
+              className="w-full rounded-md border border-gray-300 p-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
               value={config.paperSize}
-              onChange={(e) => handlePaperSizeChange(e.target.value as keyof typeof PAPER_SIZES)}
-              className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              onChange={(e) =>
+                handlePaperSizeChange(
+                  e.target.value as keyof typeof PAPER_SIZES
+                )
+              }
             >
               <option value="letter">Letter (8.5" × 11")</option>
               <option value="a4">A4 (21cm × 29.7cm)</option>
@@ -112,12 +122,18 @@ export function PageSetup({ config, onChange, className }: PageSetupProps) {
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="orientation" className="text-sm font-medium">Orientation</label>
+            <label className="text-sm font-medium" htmlFor="orientation">
+              Orientation
+            </label>
             <select
               id="orientation"
+              className="w-full rounded-md border border-gray-300 p-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
               value={config.orientation}
-              onChange={(e) => handleOrientationChange(e.target.value as 'portrait' | 'landscape')}
-              className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              onChange={(e) =>
+                handleOrientationChange(
+                  e.target.value as 'landscape' | 'portrait'
+                )
+              }
             >
               <option value="portrait">Portrait</option>
               <option value="landscape">Landscape</option>
@@ -127,79 +143,105 @@ export function PageSetup({ config, onChange, className }: PageSetupProps) {
           {config.paperSize === 'custom' && (
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label htmlFor="width" className="text-sm font-medium">Width</label>
+                <label className="text-sm font-medium" htmlFor="width">
+                  Width
+                </label>
                 <input
                   id="width"
-                  type="number"
+                  className="w-full rounded-md border border-gray-300 p-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
                   value={config.width || 8.5}
-                  onChange={(e) => onChange({
-                    ...config,
-                    width: parseFloat(e.target.value),
-                  })}
-                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  onChange={(e) =>
+                    onChange({
+                      ...config,
+                      width: parseFloat(e.target.value),
+                    })
+                  }
+                  type="number"
                 />
               </div>
               <div className="space-y-2">
-                <label htmlFor="height" className="text-sm font-medium">Height</label>
+                <label className="text-sm font-medium" htmlFor="height">
+                  Height
+                </label>
                 <input
                   id="height"
-                  type="number"
+                  className="w-full rounded-md border border-gray-300 p-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
                   value={config.height || 11}
-                  onChange={(e) => onChange({
-                    ...config,
-                    height: parseFloat(e.target.value),
-                  })}
-                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  onChange={(e) =>
+                    onChange({
+                      ...config,
+                      height: parseFloat(e.target.value),
+                    })
+                  }
+                  type="number"
                 />
               </div>
             </div>
           )}
 
           <div className="mt-6">
-            <h4 className="text-sm font-medium mb-4">Margins ({config.unit})</h4>
+            <h4 className="mb-4 text-sm font-medium">
+              Margins ({config.unit})
+            </h4>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label htmlFor="margin-top" className="text-sm font-medium">Top</label>
+                <label className="text-sm font-medium" htmlFor="margin-top">
+                  Top
+                </label>
                 <input
                   id="margin-top"
-                  type="number"
+                  className="w-full rounded-md border border-gray-300 p-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
                   value={config.margins.top}
-                  onChange={(e) => handleMarginChange('top', parseFloat(e.target.value))}
+                  onChange={(e) =>
+                    handleMarginChange('top', parseFloat(e.target.value))
+                  }
                   step="0.1"
-                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  type="number"
                 />
               </div>
               <div className="space-y-2">
-                <label htmlFor="margin-bottom" className="text-sm font-medium">Bottom</label>
+                <label className="text-sm font-medium" htmlFor="margin-bottom">
+                  Bottom
+                </label>
                 <input
                   id="margin-bottom"
-                  type="number"
+                  className="w-full rounded-md border border-gray-300 p-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
                   value={config.margins.bottom}
-                  onChange={(e) => handleMarginChange('bottom', parseFloat(e.target.value))}
+                  onChange={(e) =>
+                    handleMarginChange('bottom', parseFloat(e.target.value))
+                  }
                   step="0.1"
-                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  type="number"
                 />
               </div>
               <div className="space-y-2">
-                <label htmlFor="margin-left" className="text-sm font-medium">Left</label>
+                <label className="text-sm font-medium" htmlFor="margin-left">
+                  Left
+                </label>
                 <input
                   id="margin-left"
-                  type="number"
+                  className="w-full rounded-md border border-gray-300 p-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
                   value={config.margins.left}
-                  onChange={(e) => handleMarginChange('left', parseFloat(e.target.value))}
+                  onChange={(e) =>
+                    handleMarginChange('left', parseFloat(e.target.value))
+                  }
                   step="0.1"
-                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  type="number"
                 />
               </div>
               <div className="space-y-2">
-                <label htmlFor="margin-right" className="text-sm font-medium">Right</label>
+                <label className="text-sm font-medium" htmlFor="margin-right">
+                  Right
+                </label>
                 <input
                   id="margin-right"
-                  type="number"
+                  className="w-full rounded-md border border-gray-300 p-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
                   value={config.margins.right}
-                  onChange={(e) => handleMarginChange('right', parseFloat(e.target.value))}
+                  onChange={(e) =>
+                    handleMarginChange('right', parseFloat(e.target.value))
+                  }
                   step="0.1"
-                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  type="number"
                 />
               </div>
             </div>
@@ -210,11 +252,9 @@ export function PageSetup({ config, onChange, className }: PageSetupProps) {
           <Button variant="outline" onClick={() => setOpen(false)}>
             Cancel
           </Button>
-          <Button onClick={() => setOpen(false)}>
-            Apply
-          </Button>
+          <Button onClick={() => setOpen(false)}>Apply</Button>
         </div>
       </DialogContent>
     </Dialog>
   );
-} 
+}

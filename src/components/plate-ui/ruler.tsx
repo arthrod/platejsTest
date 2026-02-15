@@ -1,24 +1,25 @@
 'use client';
 
 import React from 'react';
+
 import { cn } from '@udecode/cn';
 
 interface RulerProps {
   className?: string;
-  width?: number;
-  unit?: 'px' | 'in' | 'cm';
-  showMargins?: boolean;
   marginLeft?: number;
   marginRight?: number;
+  showMargins?: boolean;
+  unit?: 'cm' | 'in' | 'px';
+  width?: number;
 }
 
-export function Ruler({ 
-  className, 
-  width = 800, 
-  unit = 'px',
-  showMargins = true,
+export function Ruler({
+  className,
   marginLeft = 64,
-  marginRight = 64
+  marginRight = 64,
+  showMargins = true,
+  unit = 'px',
+  width = 800,
 }: RulerProps) {
   // Adjust scale for better visibility
   const rulerScale = unit === 'px' ? 100 : unit === 'in' ? 96 : 37.8; // pixels per unit
@@ -34,19 +35,24 @@ export function Ruler({
   };
 
   return (
-    <div className={cn('relative bg-gray-100 border-b border-gray-300 select-none overflow-hidden', className)}>
-      <div 
+    <div
+      className={cn(
+        'relative overflow-hidden border-b border-gray-300 bg-gray-100 select-none',
+        className
+      )}
+    >
+      <div
         className="relative h-8 bg-gradient-to-b from-gray-50 to-gray-100"
         style={{ width: Math.max(width, 400) }}
       >
         {/* Margin indicators */}
         {showMargins && (
           <>
-            <div 
+            <div
               className="absolute top-0 bottom-0 bg-blue-200 opacity-30"
               style={{ left: 0, width: marginLeft }}
             />
-            <div 
+            <div
               className="absolute top-0 bottom-0 bg-blue-200 opacity-30"
               style={{ right: 0, width: marginRight }}
             />
@@ -58,9 +64,9 @@ export function Ruler({
           <div
             key={`minor-${index}`}
             className="absolute top-4 w-px bg-gray-400"
-            style={{ 
+            style={{
+              height: '8px',
               left: index * minorScale,
-              height: '8px'
             }}
           />
         ))}
@@ -68,15 +74,15 @@ export function Ruler({
         {/* Major ruler marks */}
         {Array.from({ length: totalMarks + 1 }, (_, index) => (
           <div key={`major-${index}`} className="absolute top-0 bottom-0">
-            <div 
+            <div
               className="absolute top-0 w-px bg-gray-700"
-              style={{ 
+              style={{
+                height: '100%',
                 left: index * rulerScale,
-                height: '100%'
               }}
             />
-            <span 
-              className="absolute top-1 text-xs text-gray-800 transform -translate-x-1/2 font-mono"
+            <span
+              className="absolute top-1 -translate-x-1/2 transform font-mono text-xs text-gray-800"
               style={{ left: index * rulerScale }}
             >
               {formatLabel(index)}
@@ -86,4 +92,4 @@ export function Ruler({
       </div>
     </div>
   );
-} 
+}

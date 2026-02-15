@@ -18,16 +18,19 @@ This plugin adds version history functionality to your Plate.js editor, allowing
 ## Components
 
 ### 1. VersionHistoryPlugin
+
 The main plugin that registers the version history functionality with Plate.js.
 
 **Location**: `src/components/editor/plugins/version-history-plugin.tsx`
 
 ### 2. VersionHistoryToolbarButton
+
 A toolbar button component that provides the version history interface.
 
 **Location**: `src/components/plate-ui/version-history-toolbar-button.tsx`
 
 **Features**:
+
 - Save revision button with save icon
 - History button that opens a popover with full version history
 - Quick restore dropdown for fast access
@@ -35,16 +38,19 @@ A toolbar button component that provides the version history interface.
 - Selected revision preview with restore option
 
 ### 3. VersionHistoryToolbar (Optional)
+
 A standalone floating toolbar component (currently not used but available).
 
 **Location**: `src/components/plate-ui/version-history-toolbar.tsx`
 
 ### 4. DiffView
+
 A component that displays visual differences between two revisions.
 
 **Location**: `src/components/plate-ui/diff-view.tsx`
 
 **Features**:
+
 - Word-level and line-level diff highlighting
 - Color-coded additions (green) and deletions (red)
 - Toggle to show/hide unchanged content
@@ -52,16 +58,19 @@ A component that displays visual differences between two revisions.
 - Clean, readable diff presentation
 
 ### 5. DiffModal
+
 A modal dialog for displaying diff comparisons in full-screen.
 
 **Location**: `src/components/plate-ui/diff-modal.tsx`
 
 ### 6. Diff Utilities
+
 Utility functions for comparing editor content and extracting text.
 
 **Location**: `src/lib/diff-utils.ts`
 
 **Functions**:
+
 - `compareEditorValues()`: Compare two editor values
 - `extractTextFromValue()`: Extract plain text from editor content
 - `extractStructuredText()`: Extract text with formatting structure
@@ -81,10 +90,10 @@ The plugin is already integrated into the editor. It's included in:
 1. **Save a Revision**: Click the save icon (💾) in the toolbar to save the current content as a new revision
 2. **View History**: Click the history icon (🕒) to open the version history panel
 3. **Quick Restore**: Use the "Quick Restore" dropdown for fast access to recent versions
-4. **Browse & Restore**: 
+4. **Browse & Restore**:
    - Click on any revision in the list to preview it
    - Click the restore button (🔀) to apply that version to the editor
-5. **Compare Revisions**: 
+5. **Compare Revisions**:
    - Click the compare button (⚖️) next to any revision to see differences with current version
    - Use "Compare with Current" button in the preview section
 6. **Delete Revisions**: Click the delete button (🗑️) to remove unwanted revisions
@@ -145,10 +154,10 @@ const loadFromStorage = (): Revision[] => {
 
 ```tsx
 interface Revision {
-  id: string;           // Unique identifier
-  value: any;          // Editor content (Plate.js value)
-  timestamp: Date;     // When the revision was created
-  label?: string;      // Display label for the revision
+  id: string; // Unique identifier
+  value: any; // Editor content (Plate.js value)
+  timestamp: Date; // When the revision was created
+  label?: string; // Display label for the revision
 }
 ```
 
@@ -194,4 +203,4 @@ Potential improvements for the plugin:
 8. **Compression**: Optimize storage for large revision histories
 9. **Metadata**: Add more metadata like author, tags, etc.
 10. **Diff Statistics**: More detailed change analytics
-11. **Merge Conflicts**: Handle and resolve conflicts between revisions 
+11. **Merge Conflicts**: Handle and resolve conflicts between revisions

@@ -15,8 +15,5 @@ export const useChat = () => {
       apiKey: keys.gemini,
       model: model.value,
     },
-
   });
 };
-
-
