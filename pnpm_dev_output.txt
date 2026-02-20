@@ -1,0 +1,26 @@
+
+> plate-playground-template@0.1.0 dev /app
+> next dev --turbo
+
+   ▲ Next.js 15.1.6 (Turbopack)
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.0.2:3000
+
+ ✓ Starting...
+ ✓ Ready in 1340ms
+ ○ Compiling /editor ...
+ ✓ Compiled /editor in 34.1s
+ GET /editor 200 in 37509ms
+ GET /editor 200 in 356ms
+ GET /editor 200 in 279ms
+ GET /editor 200 in 293ms
+ GET /editor 200 in 275ms
+Detected multiple Jotai instances. It may cause unexpected behavior with the default store. https://github.com/pmndrs/jotai/discussions/2044
+ GET /editor 200 in 2799ms
+ ✓ Compiled in 476ms
+ ○ Compiling /editor ...
+ ✓ Compiled /editor in 687ms
+Detected multiple Jotai instances. It may cause unexpected behavior with the default store. https://github.com/pmndrs/jotai/discussions/2044
+ GET /editor 200 in 2596ms
+ GET /editor 200 in 392ms
+ ✓ Compiled in 457ms
