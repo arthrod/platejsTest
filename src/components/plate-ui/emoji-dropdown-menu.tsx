@@ -2,16 +2,36 @@
 
 import React from 'react';
 
+import { cn } from '@udecode/cn';
 import {
   type EmojiDropdownMenuOptions,
   useEmojiDropdownMenuState,
 } from '@udecode/plate-emoji/react';
 import { Smile } from 'lucide-react';
+import dynamic from 'next/dynamic';
 
 import { emojiCategoryIcons, emojiSearchIcons } from './emoji-icons';
-import { EmojiPicker } from './emoji-picker';
 import { EmojiToolbarDropdown } from './emoji-toolbar-dropdown';
+import { Spinner } from './spinner';
 import { ToolbarButton } from './toolbar';
+
+// ⚡ Bolt: Lazy load EmojiPicker to reduce initial bundle size (heavy component)
+const EmojiPicker = dynamic(
+  () => import('./emoji-picker').then((mod) => mod.EmojiPicker),
+  {
+    loading: () => (
+      <div
+        className={cn(
+          'flex flex-col items-center justify-center rounded-xl bg-popover text-popover-foreground',
+          'h-[23rem] w-80 border shadow-md'
+        )}
+      >
+        <Spinner />
+      </div>
+    ),
+  }
+);
+
 type EmojiDropdownMenuProps = {
   options?: EmojiDropdownMenuOptions;
 } & React.ComponentPropsWithoutRef<typeof ToolbarButton>;
