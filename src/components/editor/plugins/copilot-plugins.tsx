@@ -2,11 +2,24 @@
 
 import type { TElement } from '@udecode/plate';
 
-import { faker } from '@faker-js/faker';
 import { CopilotPlugin } from '@udecode/plate-ai/react';
 import { serializeMdNodes, stripMarkdown } from '@udecode/plate-markdown';
 
 import { GhostText } from '@/components/plate-ui/ghost-text';
+
+// Lightweight replacement for faker.lorem.sentence()
+const mockSentence = () => {
+  const sentences = [
+    'The quick brown fox jumps over the lazy dog.',
+    'Pack my box with five dozen liquor jugs.',
+    'How vexingly quick daft zebras jump!',
+    'The five boxing wizards jump quickly.',
+    'Sphinx of black quartz, judge my vow.',
+    'Two driven jocks help fax my big quiz.',
+    'The jay, pig, fox, zebra, and my wolves quack!',
+  ];
+  return sentences[Math.floor(Math.random() * sentences.length)];
+};
 
 export const copilotPlugins = [
   CopilotPlugin.configure(({ api }) => ({
@@ -29,7 +42,7 @@ export const copilotPlugins = [
         onError: () => {
           // Mock the API response. Remove it when you implement the route /api/ai/copilot
           api.copilot.setBlockSuggestion({
-            text: stripMarkdown(faker.lorem.sentence()),
+            text: stripMarkdown(mockSentence()),
           });
         },
         onFinish: (_, completion) => {
