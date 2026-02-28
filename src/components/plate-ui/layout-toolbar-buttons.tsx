@@ -8,7 +8,9 @@ import { ToolbarButton } from '@/components/plate-ui/toolbar';
 import { useLayoutStore } from '@/lib/layout-store';
 
 export function RulerToggleButton() {
-  const { showRuler, toggleRuler } = useLayoutStore();
+  // Optimization: Select specific state instead of destructuring whole store to prevent unnecessary re-renders
+  const showRuler = useLayoutStore((state) => state.showRuler);
+  const toggleRuler = useLayoutStore((state) => state.toggleRuler);
 
   return (
     <ToolbarButton
@@ -22,7 +24,9 @@ export function RulerToggleButton() {
 }
 
 export function PageSetupButton() {
-  const { showPageSetup, togglePageSetup } = useLayoutStore();
+  // Optimization: Select specific state instead of destructuring whole store to prevent unnecessary re-renders
+  const showPageSetup = useLayoutStore((state) => state.showPageSetup);
+  const togglePageSetup = useLayoutStore((state) => state.togglePageSetup);
 
   return (
     <ToolbarButton
@@ -36,7 +40,9 @@ export function PageSetupButton() {
 }
 
 export function LayoutToggleButton() {
-  const { layoutMode, toggleLayoutMode } = useLayoutStore();
+  // Optimization: Select specific state instead of destructuring whole store to prevent unnecessary re-renders
+  const layoutMode = useLayoutStore((state) => state.layoutMode);
+  const toggleLayoutMode = useLayoutStore((state) => state.toggleLayoutMode);
 
   return (
     <ToolbarButton
@@ -52,7 +58,12 @@ export function LayoutToggleButton() {
 }
 
 export function MultiPageToggleButton() {
-  const { layoutMode, multiPageMode, toggleMultiPageMode } = useLayoutStore();
+  // Optimization: Select specific state instead of destructuring whole store to prevent unnecessary re-renders
+  const layoutMode = useLayoutStore((state) => state.layoutMode);
+  const multiPageMode = useLayoutStore((state) => state.multiPageMode);
+  const toggleMultiPageMode = useLayoutStore(
+    (state) => state.toggleMultiPageMode
+  );
 
   // Only show when in page layout mode
   if (layoutMode !== 'page') {
