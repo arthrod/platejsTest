@@ -7,9 +7,17 @@ import {
   useEmojiDropdownMenuState,
 } from '@udecode/plate-emoji/react';
 import { Smile } from 'lucide-react';
+import dynamic from 'next/dynamic';
 
 import { emojiCategoryIcons, emojiSearchIcons } from './emoji-icons';
-import { EmojiPicker } from './emoji-picker';
+// ⚡ Bolt Optimization: Lazy load the heavy EmojiPicker component to reduce initial bundle size.
+// It uses a placeholder matching the exact dimensions of the picker to prevent layout shifts.
+const EmojiPicker = dynamic(
+  () => import('./emoji-picker').then((mod) => mod.EmojiPicker),
+  {
+    loading: () => <div className="h-[23rem] w-80" />,
+  }
+);
 import { EmojiToolbarDropdown } from './emoji-toolbar-dropdown';
 import { ToolbarButton } from './toolbar';
 type EmojiDropdownMenuProps = {
