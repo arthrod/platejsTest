@@ -1,0 +1,3 @@
+## 2024-02-12 - Prevent Re-renders with Zustand Selectors
+**Learning:** Destructuring entire state objects from a Zustand store (e.g., `const { a, b } = useStore()`) causes the component to re-render whenever *any* value in the store changes, not just the destructured ones. This is a common performance bottleneck in React applications using Zustand.
+**Action:** Always use individual state selectors (e.g., `const a = useStore((state) => state.a); const b = useStore((state) => state.b);`) to subscribe components only to the specific pieces of state they need. This ensures components only re-render when those specific values change.
