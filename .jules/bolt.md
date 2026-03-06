@@ -1,0 +1,4 @@
+## 2025-03-05 - [Optimize Initial Load of Plate Editor by Lazy Loading Heavy Dependencies like EmojiPicker]
+
+**Learning:** In a rich text editor codebase with many UI plugins, components that are rarely used immediately or are hidden behind menus (like `EmojiPicker`) often eagerly import large datasets or heavy libraries (like `@emoji-mart/data`). This significantly inflates the initial Javascript bundle size and negatively impacts application load times.
+**Action:** When working on heavily-featured React applications, systematically identify UI components that are hidden until user interaction (like modals, dropdowns, pickers) and dynamically import them using `next/dynamic` or `React.lazy`. Make sure to provide a correctly-sized placeholder in the dynamic import's `loading` state to prevent layout shifts.
