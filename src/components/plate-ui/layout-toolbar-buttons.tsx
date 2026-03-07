@@ -8,7 +8,10 @@ import { ToolbarButton } from '@/components/plate-ui/toolbar';
 import { useLayoutStore } from '@/lib/layout-store';
 
 export function RulerToggleButton() {
-  const { showRuler, toggleRuler } = useLayoutStore();
+  // ⚡ Bolt: Using individual selectors instead of destructuring
+  // to prevent unnecessary re-renders when other store values change.
+  const showRuler = useLayoutStore((state) => state.showRuler);
+  const toggleRuler = useLayoutStore((state) => state.toggleRuler);
 
   return (
     <ToolbarButton
@@ -22,7 +25,9 @@ export function RulerToggleButton() {
 }
 
 export function PageSetupButton() {
-  const { showPageSetup, togglePageSetup } = useLayoutStore();
+  // ⚡ Bolt: Using individual selectors instead of destructuring
+  const showPageSetup = useLayoutStore((state) => state.showPageSetup);
+  const togglePageSetup = useLayoutStore((state) => state.togglePageSetup);
 
   return (
     <ToolbarButton
@@ -36,7 +41,9 @@ export function PageSetupButton() {
 }
 
 export function LayoutToggleButton() {
-  const { layoutMode, toggleLayoutMode } = useLayoutStore();
+  // ⚡ Bolt: Using individual selectors instead of destructuring
+  const layoutMode = useLayoutStore((state) => state.layoutMode);
+  const toggleLayoutMode = useLayoutStore((state) => state.toggleLayoutMode);
 
   return (
     <ToolbarButton
@@ -52,7 +59,12 @@ export function LayoutToggleButton() {
 }
 
 export function MultiPageToggleButton() {
-  const { layoutMode, multiPageMode, toggleMultiPageMode } = useLayoutStore();
+  // ⚡ Bolt: Using individual selectors instead of destructuring
+  const layoutMode = useLayoutStore((state) => state.layoutMode);
+  const multiPageMode = useLayoutStore((state) => state.multiPageMode);
+  const toggleMultiPageMode = useLayoutStore(
+    (state) => state.toggleMultiPageMode
+  );
 
   // Only show when in page layout mode
   if (layoutMode !== 'page') {
