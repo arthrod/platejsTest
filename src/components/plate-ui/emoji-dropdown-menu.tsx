@@ -7,11 +7,22 @@ import {
   useEmojiDropdownMenuState,
 } from '@udecode/plate-emoji/react';
 import { Smile } from 'lucide-react';
+import dynamic from 'next/dynamic';
 
 import { emojiCategoryIcons, emojiSearchIcons } from './emoji-icons';
-import { EmojiPicker } from './emoji-picker';
 import { EmojiToolbarDropdown } from './emoji-toolbar-dropdown';
 import { ToolbarButton } from './toolbar';
+
+// ⚡ Bolt: Dynamically importing EmojiPicker to reduce initial bundle size.
+// The component is large and only needed when the dropdown is opened.
+// The loading placeholder matches the exact dimensions to prevent layout shifts.
+const EmojiPicker = dynamic(
+  () => import('./emoji-picker').then((mod) => mod.EmojiPicker),
+  {
+    loading: () => <div className="h-[23rem] w-80" />,
+  }
+);
+
 type EmojiDropdownMenuProps = {
   options?: EmojiDropdownMenuOptions;
 } & React.ComponentPropsWithoutRef<typeof ToolbarButton>;
