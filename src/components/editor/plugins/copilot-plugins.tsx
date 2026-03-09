@@ -2,9 +2,18 @@
 
 import type { TElement } from '@udecode/plate';
 
-import { faker } from '@faker-js/faker';
 import { CopilotPlugin } from '@udecode/plate-ai/react';
 import { serializeMdNodes, stripMarkdown } from '@udecode/plate-markdown';
+
+// Bolt: Removed @faker-js/faker to optimize bundle size.
+// Using a lightweight local replacement for simple mock data generation.
+const MOCK_SENTENCES = [
+  'The quick brown fox jumps over the lazy dog.',
+  'Innovation distinguishes between a leader and a follower.',
+  'Code is like humor. When you have to explain it, it’s bad.',
+  'First, solve the problem. Then, write the code.',
+  'Make it work, make it right, make it fast.',
+];
 
 import { GhostText } from '@/components/plate-ui/ghost-text';
 
@@ -28,8 +37,9 @@ export const copilotPlugins = [
         },
         onError: () => {
           // Mock the API response. Remove it when you implement the route /api/ai/copilot
+          const randomSentence = MOCK_SENTENCES[Math.floor(Math.random() * MOCK_SENTENCES.length)];
           api.copilot.setBlockSuggestion({
-            text: stripMarkdown(faker.lorem.sentence()),
+            text: stripMarkdown(randomSentence),
           });
         },
         onFinish: (_, completion) => {
