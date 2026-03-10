@@ -1,0 +1,15 @@
+
+> plate-playground-template@0.1.0 dev /app
+> next dev --turbo
+
+   ▲ Next.js 15.1.6 (Turbopack)
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.0.2:3000
+
+ ✓ Starting...
+ ✓ Ready in 1399ms
+ ○ Compiling /editor ...
+ ✓ Compiled /editor in 35.3s
+ GET /editor 200 in 39193ms
+ GET /editor 200 in 375ms
+ GET /editor 200 in 333ms
