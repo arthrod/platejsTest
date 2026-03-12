@@ -1,0 +1,4 @@
+## 2024-03-12 - [Lazy Loading Heavy Plate UI Components]
+
+**Learning:** The `@emoji-mart/data` dependency is large, and `EmojiPicker` (a heavy Plate UI component) was being eagerly imported in `EmojiDropdownMenu`, significantly bloating the initial JavaScript bundle for the editor. Since `EmojiPicker` is only used when the user explicitly opens the dropdown, it is a prime candidate for code splitting. However, because Radix UI/Plate tooltips and overlays calculate their positioning based on the content's initial dimensions, dynamically importing without a placeholder causes severe layout shifts.
+**Action:** Always use `next/dynamic` to lazy load heavy, infrequently used components. Critically, to prevent layout shifts and popping, the dynamic import must include a `loading` fallback with the _exact dimensions_ of the rendered component (e.g., `h-[23rem] w-80` for the `EmojiPicker`).
