@@ -1,0 +1,3 @@
+## 2024-03-14 - [Zustand Store Destructuring Causes Re-renders]
+**Learning:** Destructuring the state object from a `zustand` hook (e.g., `const { a, b } = useStore()`) subscribes the component to *all* changes in the store. This causes the component to unnecessarily re-render even if unrelated properties in the store update, leading to performance bottlenecks when the store manages multiple distinct pieces of state (like `useLayoutStore` managing ruler, layout mode, and sidebar).
+**Action:** Always use individual selectors when accessing `zustand` state (e.g., `const a = useStore((state) => state.a)`). This ensures the component only subscribes to and re-renders for the specific state it requires.
