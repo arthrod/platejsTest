@@ -7,10 +7,19 @@ import {
   useEmojiDropdownMenuState,
 } from '@udecode/plate-emoji/react';
 import { Smile } from 'lucide-react';
+import dynamic from 'next/dynamic';
 
 import { emojiCategoryIcons, emojiSearchIcons } from './emoji-icons';
-import { EmojiPicker } from './emoji-picker';
 import { EmojiToolbarDropdown } from './emoji-toolbar-dropdown';
+
+const EmojiPicker = dynamic(
+  () => import('./emoji-picker').then((m) => m.EmojiPicker),
+  {
+    loading: () => (
+      <div className="flex h-[23rem] w-80 items-center justify-center" />
+    ),
+  }
+);
 import { ToolbarButton } from './toolbar';
 type EmojiDropdownMenuProps = {
   options?: EmojiDropdownMenuOptions;
