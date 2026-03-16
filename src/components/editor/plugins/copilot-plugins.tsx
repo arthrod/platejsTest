@@ -2,11 +2,27 @@
 
 import type { TElement } from '@udecode/plate';
 
-import { faker } from '@faker-js/faker';
 import { CopilotPlugin } from '@udecode/plate-ai/react';
 import { serializeMdNodes, stripMarkdown } from '@udecode/plate-markdown';
 
 import { GhostText } from '@/components/plate-ui/ghost-text';
+
+// ⚡ Bolt: Replaced heavy @faker-js/faker dependency with static mock sentences
+// to significantly reduce the client-side bundle size.
+const MOCK_SENTENCES = [
+  'This is a generated suggestion from the copilot.',
+  'The quick brown fox jumps over the lazy dog.',
+  'Here is another brilliant continuation of your text.',
+  'Plate allows you to build rich-text editors easily.',
+  'Artificial intelligence is transforming how we write.',
+  'Consider adding more details to your previous paragraph.',
+  'A well-crafted sentence can make all the difference.',
+  'Always measure performance before optimizing.',
+];
+
+function getRandomSentence() {
+  return MOCK_SENTENCES[Math.floor(Math.random() * MOCK_SENTENCES.length)];
+}
 
 export const copilotPlugins = [
   CopilotPlugin.configure(({ api }) => ({
@@ -28,8 +44,9 @@ export const copilotPlugins = [
         },
         onError: () => {
           // Mock the API response. Remove it when you implement the route /api/ai/copilot
+          // ⚡ Bolt: Using lightweight random sentence picker instead of faker
           api.copilot.setBlockSuggestion({
-            text: stripMarkdown(faker.lorem.sentence()),
+            text: stripMarkdown(getRandomSentence()),
           });
         },
         onFinish: (_, completion) => {
