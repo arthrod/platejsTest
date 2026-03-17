@@ -1,0 +1,3 @@
+## 2024-05-14 - Lazy Loading Heavy UI Components in Plate
+**Learning:** Found that heavy dependencies like `@emoji-mart/data` within Plate plugins can be deferred from the initial Next.js bundle without architectural refactoring. Specifically, `next/dynamic` works seamlessly with Radix UI popovers/dropdowns if you supply a `loading` fallback with the exact dimensions (e.g., `h-[23rem] w-80`) of the fully-loaded component to prevent layout shifts.
+**Action:** When evaluating bundle size in Next.js + Plate applications, always look for heavy components that are initially hidden (like EmojiPicker inside a dropdown) and defer them using `next/dynamic` with an accurately-sized loading placeholder.
