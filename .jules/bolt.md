@@ -1,0 +1,3 @@
+## 2024-05-18 - Prevent unnecessary component re-renders with Zustand individual selectors
+**Learning:** Using whole-state destructuring with Zustand (e.g., `const { a, b } = useStore()`) causes Next.js components to re-render whenever ANY value in the store changes, even if the component doesn't use that specific value. This can cause unnecessary re-renders cascading down the component tree.
+**Action:** Always use individual selectors when consuming Zustand store values in components (e.g., `const a = useStore(state => state.a)`).
