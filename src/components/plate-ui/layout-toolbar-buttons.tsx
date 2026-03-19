@@ -8,7 +8,11 @@ import { ToolbarButton } from '@/components/plate-ui/toolbar';
 import { useLayoutStore } from '@/lib/layout-store';
 
 export function RulerToggleButton() {
-  const { showRuler, toggleRuler } = useLayoutStore();
+  // ⚡ Bolt: Destructuring zustand store state causes the component to re-render
+  // whenever ANY state in the store changes. Using individual selectors ensures
+  // this component only re-renders when these specific properties change.
+  const showRuler = useLayoutStore((state) => state.showRuler);
+  const toggleRuler = useLayoutStore((state) => state.toggleRuler);
 
   return (
     <ToolbarButton
@@ -22,7 +26,11 @@ export function RulerToggleButton() {
 }
 
 export function PageSetupButton() {
-  const { showPageSetup, togglePageSetup } = useLayoutStore();
+  // ⚡ Bolt: Destructuring zustand store state causes the component to re-render
+  // whenever ANY state in the store changes. Using individual selectors ensures
+  // this component only re-renders when these specific properties change.
+  const showPageSetup = useLayoutStore((state) => state.showPageSetup);
+  const togglePageSetup = useLayoutStore((state) => state.togglePageSetup);
 
   return (
     <ToolbarButton
@@ -36,7 +44,11 @@ export function PageSetupButton() {
 }
 
 export function LayoutToggleButton() {
-  const { layoutMode, toggleLayoutMode } = useLayoutStore();
+  // ⚡ Bolt: Destructuring zustand store state causes the component to re-render
+  // whenever ANY state in the store changes. Using individual selectors ensures
+  // this component only re-renders when these specific properties change.
+  const layoutMode = useLayoutStore((state) => state.layoutMode);
+  const toggleLayoutMode = useLayoutStore((state) => state.toggleLayoutMode);
 
   return (
     <ToolbarButton
@@ -52,7 +64,14 @@ export function LayoutToggleButton() {
 }
 
 export function MultiPageToggleButton() {
-  const { layoutMode, multiPageMode, toggleMultiPageMode } = useLayoutStore();
+  // ⚡ Bolt: Destructuring zustand store state causes the component to re-render
+  // whenever ANY state in the store changes. Using individual selectors ensures
+  // this component only re-renders when these specific properties change.
+  const layoutMode = useLayoutStore((state) => state.layoutMode);
+  const multiPageMode = useLayoutStore((state) => state.multiPageMode);
+  const toggleMultiPageMode = useLayoutStore(
+    (state) => state.toggleMultiPageMode
+  );
 
   // Only show when in page layout mode
   if (layoutMode !== 'page') {
