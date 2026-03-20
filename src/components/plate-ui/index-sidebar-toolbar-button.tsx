@@ -8,7 +8,13 @@ import { ToolbarButton } from '@/components/plate-ui/toolbar';
 import { useLayoutStore } from '@/lib/layout-store';
 
 export function IndexSidebarToolbarButton() {
-  const { setShowIndexSidebar, showIndexSidebar } = useLayoutStore();
+  // ⚡ Bolt Performance Optimization:
+  // Selecting specific state from Zustand store avoids unnecessary re-renders
+  // when other layout properties (e.g. layoutMode) change.
+  const setShowIndexSidebar = useLayoutStore(
+    (state) => state.setShowIndexSidebar
+  );
+  const showIndexSidebar = useLayoutStore((state) => state.showIndexSidebar);
 
   return (
     <ToolbarButton
