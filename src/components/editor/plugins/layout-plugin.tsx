@@ -9,14 +9,13 @@ import { MultiPageLayout } from '@/components/plate-ui/multi-page-layout';
 import { useLayoutStore } from '@/lib/layout-store';
 
 function LayoutProvider({ children }: { children: React.ReactNode }) {
-  const {
-    layoutMode,
-    multiPageMode,
-    pageConfig,
-    setPageConfig,
-    showPageSetup,
-    showRuler,
-  } = useLayoutStore();
+  // ⚡ Bolt: Using individual selectors instead of whole-state destructuring to prevent unnecessary re-renders
+  const layoutMode = useLayoutStore((state) => state.layoutMode);
+  const multiPageMode = useLayoutStore((state) => state.multiPageMode);
+  const pageConfig = useLayoutStore((state) => state.pageConfig);
+  const setPageConfig = useLayoutStore((state) => state.setPageConfig);
+  const showPageSetup = useLayoutStore((state) => state.showPageSetup);
+  const showRuler = useLayoutStore((state) => state.showRuler);
 
   // If in web layout mode, just render children without wrapper
   if (layoutMode === 'web') {
