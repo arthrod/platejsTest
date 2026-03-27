@@ -2,11 +2,18 @@
 
 import type { TElement } from '@udecode/plate';
 
-import { faker } from '@faker-js/faker';
 import { CopilotPlugin } from '@udecode/plate-ai/react';
 import { serializeMdNodes, stripMarkdown } from '@udecode/plate-markdown';
 
 import { GhostText } from '@/components/plate-ui/ghost-text';
+
+const MOCK_SENTENCES = [
+  'The quick brown fox jumps over the lazy dog.',
+  'A journey of a thousand miles begins with a single step.',
+  'To be or not to be, that is the question.',
+  'All that glitters is not gold.',
+  'Knowledge is power.',
+];
 
 export const copilotPlugins = [
   CopilotPlugin.configure(({ api }) => ({
@@ -28,8 +35,9 @@ export const copilotPlugins = [
         },
         onError: () => {
           // Mock the API response. Remove it when you implement the route /api/ai/copilot
+          const randomSentence = MOCK_SENTENCES[Math.floor(Math.random() * MOCK_SENTENCES.length)];
           api.copilot.setBlockSuggestion({
-            text: stripMarkdown(faker.lorem.sentence()),
+            text: stripMarkdown(randomSentence),
           });
         },
         onFinish: (_, completion) => {
