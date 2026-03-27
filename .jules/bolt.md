@@ -1,0 +1,3 @@
+## 2024-05-18 - [Bundle size optimization]
+**Learning:** Avoid heavy data generation libraries (`@faker-js/faker`) in client-side Next.js components when only a simple fallback or mock string is needed. It gets eagerly bundled on the client side, significantly increasing the JS payload size.
+**Action:** Replace `faker.lorem.sentence()` with a tiny constant array of strings when mocking UI behaviors locally to reduce bundle size without losing functionality.
