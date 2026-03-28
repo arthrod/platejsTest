@@ -1,0 +1,4 @@
+## 2024-05-24 - [Optimize EmojiPicker Loading]
+
+**Learning:** In Next.js applications using Plate.js, heavy UI components like `EmojiPicker` (which may import `@emoji-mart/data` or other large datasets) can significantly impact the initial bundle size. Radix UI primitives like `Popover` are used in components like `EmojiToolbarDropdown` to conditionally render their content, which provides an excellent opportunity for lazy loading. Since the content isn't needed until the dropdown is opened, `next/dynamic` can be used to defer the import, reducing the main thread blocking and initial load time.
+**Action:** When working with heavy UI components inside dropdowns or popovers, use `next/dynamic` to lazy load them. Always provide a fallback placeholder with matching dimensions (e.g., `h-[23rem] w-80` for the EmojiPicker) to prevent layout shifts.
