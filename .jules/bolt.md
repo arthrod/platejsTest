@@ -1,0 +1,4 @@
+## 2024-02-05 - Lazy Loading Heavy UI Components
+
+**Learning:** Initial page loads and React rendering in Next.js 15 apps can be bottlenecked by eagerly loaded interactive UI components like `EmojiPicker`. Because the `EmojiPicker` relies on synchronous external data (`@emoji-mart/data`) locally, we must lazy load the component itself (e.g. `dynamic(() => import('./emoji-picker').then(mod => mod.EmojiPicker))`) rather than try to lazy load the data configuration within the eager component initialization. This prevents the large bundle and parse time of the component and its heavy data dependency from affecting the critical rendering path.
+**Action:** Identify feature-complete UI components (such as pickers, rich text tools, or non-visible sidebars) that aren't necessary for initial page load and use `next/dynamic` to load them asynchronously on demand. Always provide an explicit placeholder `loading` wrapper to prevent CLS.
