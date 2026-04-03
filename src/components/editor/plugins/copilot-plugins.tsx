@@ -2,7 +2,6 @@
 
 import type { TElement } from '@udecode/plate';
 
-import { faker } from '@faker-js/faker';
 import { CopilotPlugin } from '@udecode/plate-ai/react';
 import { serializeMdNodes, stripMarkdown } from '@udecode/plate-markdown';
 
@@ -28,8 +27,9 @@ export const copilotPlugins = [
         },
         onError: () => {
           // Mock the API response. Remove it when you implement the route /api/ai/copilot
+          // Bolt Optimization: Replaced heavy @faker-js/faker dependency with static string to reduce client bundle size
           api.copilot.setBlockSuggestion({
-            text: stripMarkdown(faker.lorem.sentence()),
+            text: stripMarkdown('This is a mocked AI completion.'),
           });
         },
         onFinish: (_, completion) => {
