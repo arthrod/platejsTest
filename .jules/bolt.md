@@ -1,0 +1,4 @@
+## 2024-06-25 - React Re-renders from Zustand Destructuring
+
+**Learning:** When using state management libraries like Zustand in React components, destructuring the entire store object (e.g., `const { a, b } = useStore()`) implicitly subscribes the component to all state changes within the store. This means the component will unnecessarily re-render anytime _any_ property in the store changes, even if it doesn't use that property. This is a subtle but significant performance bottleneck in an application with centralized stores that are frequently updated.
+**Action:** Always extract exactly what is needed from global state using fine-grained individual selectors (e.g., `const a = useStore((state) => state.a)`). This ensures the component only re-renders when the specific piece of state it depends on actually changes, improving overall application performance and reducing wasted render cycles.
