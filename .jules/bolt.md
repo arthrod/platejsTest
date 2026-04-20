@@ -1,0 +1,3 @@
+## 2024-04-20 - Prevent unnecessary React re-renders with Zustand useShallow
+**Learning:** Components using destructured properties from Zustand stores (like `useLayoutStore`) will re-render whenever ANY property in the store changes, even if the destructured properties themselves haven't changed. This is a common performance bottleneck in React applications using Zustand.
+**Action:** Always use `useShallow` from `zustand/react/shallow` when accessing multiple store properties simultaneously, or use individual selector functions for single properties, to prevent unnecessary renders and optimize performance.
