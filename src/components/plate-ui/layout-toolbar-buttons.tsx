@@ -3,12 +3,18 @@
 import React from 'react';
 
 import { FileText, Layout, Ruler, Settings } from 'lucide-react';
+import { useShallow } from 'zustand/react/shallow';
 
 import { ToolbarButton } from '@/components/plate-ui/toolbar';
 import { useLayoutStore } from '@/lib/layout-store';
 
 export function RulerToggleButton() {
-  const { showRuler, toggleRuler } = useLayoutStore();
+  const { showRuler, toggleRuler } = useLayoutStore(
+    useShallow((state) => ({
+      showRuler: state.showRuler,
+      toggleRuler: state.toggleRuler,
+    }))
+  );
 
   return (
     <ToolbarButton
@@ -22,7 +28,12 @@ export function RulerToggleButton() {
 }
 
 export function PageSetupButton() {
-  const { showPageSetup, togglePageSetup } = useLayoutStore();
+  const { showPageSetup, togglePageSetup } = useLayoutStore(
+    useShallow((state) => ({
+      showPageSetup: state.showPageSetup,
+      togglePageSetup: state.togglePageSetup,
+    }))
+  );
 
   return (
     <ToolbarButton
@@ -36,7 +47,12 @@ export function PageSetupButton() {
 }
 
 export function LayoutToggleButton() {
-  const { layoutMode, toggleLayoutMode } = useLayoutStore();
+  const { layoutMode, toggleLayoutMode } = useLayoutStore(
+    useShallow((state) => ({
+      layoutMode: state.layoutMode,
+      toggleLayoutMode: state.toggleLayoutMode,
+    }))
+  );
 
   return (
     <ToolbarButton
@@ -52,7 +68,13 @@ export function LayoutToggleButton() {
 }
 
 export function MultiPageToggleButton() {
-  const { layoutMode, multiPageMode, toggleMultiPageMode } = useLayoutStore();
+  const { layoutMode, multiPageMode, toggleMultiPageMode } = useLayoutStore(
+    useShallow((state) => ({
+      layoutMode: state.layoutMode,
+      multiPageMode: state.multiPageMode,
+      toggleMultiPageMode: state.toggleMultiPageMode,
+    }))
+  );
 
   // Only show when in page layout mode
   if (layoutMode !== 'page') {
