@@ -3,12 +3,20 @@
 import React from 'react';
 
 import { List } from 'lucide-react';
+import { useShallow } from 'zustand/react/shallow';
 
 import { ToolbarButton } from '@/components/plate-ui/toolbar';
 import { useLayoutStore } from '@/lib/layout-store';
 
 export function IndexSidebarToolbarButton() {
-  const { setShowIndexSidebar, showIndexSidebar } = useLayoutStore();
+  // ⚡ Bolt Optimization: Using useShallow prevents this component from re-rendering
+  // whenever unrelated store properties change, saving CPU cycles.
+  const { setShowIndexSidebar, showIndexSidebar } = useLayoutStore(
+    useShallow((state) => ({
+      setShowIndexSidebar: state.setShowIndexSidebar,
+      showIndexSidebar: state.showIndexSidebar,
+    }))
+  );
 
   return (
     <ToolbarButton
